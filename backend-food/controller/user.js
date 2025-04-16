@@ -64,7 +64,7 @@ export const getUserById = async (req, res) => {
       })
       .end();
   } catch (error) {
-    console.error(error, "err helo");
+    console.error(error, "err");
     return res
       .status(400)
       .send({
