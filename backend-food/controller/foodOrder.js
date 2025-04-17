@@ -1,21 +1,20 @@
-import { UserModel } from "../model/userModel.js";
+import { FoodOrderModel } from "../model/foodOrderModel.js";
 
-export const createUser = async (req, res) => {
-  const { email, password, phoneNumber, address, isVerified } = req.body;
+export const createFoodOrder = async (req, res) => {
+  const { user, totalPrice, foodOrderItems, status } = req.body;
 
   try {
-    const user = await UserModel.create({
-      email: email,
-      password: password,
-      phoneNumber: phoneNumber,
-      address: address,
-      isVerified: isVerified,
+    const foodOrder = await FoodOrderModel.create({
+      user: user,
+      totalPrice: totalPrice,
+      foodOrderItems: foodOrderItems,
+      status: status,
     });
     res
       .status(200)
       .send({
         success: true,
-        user: user,
+        foodOrder: foodOrder,
       })
       .end();
   } catch (error) {
@@ -30,14 +29,14 @@ export const createUser = async (req, res) => {
   }
 };
 
-export const getUsers = async (__, res) => {
+export const getFoodOrders = async (__, res) => {
   try {
-    const users = await UserModel.find();
+    const foodOrders = await FoodOrderModel.find();
     return res
       .status(200)
       .send({
         success: true,
-        users: users,
+        foodOrders: foodOrders,
       })
       .end();
   } catch (error) {
@@ -52,15 +51,15 @@ export const getUsers = async (__, res) => {
   }
 };
 
-export const getUserById = async (req, res) => {
+export const getFoodOrderById = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await UserModel.findById(id);
+    const foodOrder = await FoodOrderModel.findById(id);
     return res
       .status(200)
       .send({
         success: true,
-        user: user,
+        foodOrder: foodOrder,
       })
       .end();
   } catch (error) {

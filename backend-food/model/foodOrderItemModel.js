@@ -1,17 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const foodOrderItemSchema = new mongoose.Schema({
+  food: {
+    type: [Schema.Types.ObjectId],
+    ref: "Food",
+  },
   quantity: {
     type: String,
     required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
   },
 });
 

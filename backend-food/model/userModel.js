@@ -10,23 +10,29 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   phoneNumber: {
-    type: Number,
+    type: String,
     required: true,
-    min: 8,
+    minlength: 8,
   },
   address: {
     type: String,
     required: true,
-    min: 8,
-  },
-  isVerified: {
-    type: Boolean,
-    required: true,
+    minlength: 8,
   },
   role: {
     type: String,
     enum: ["User", "Admin"],
     default: "User",
+  },
+  orderedFoods: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Food",
+    },
+  ],
+  isVerified: {
+    type: Boolean,
+    required: true,
   },
   createdAt: {
     type: Date,

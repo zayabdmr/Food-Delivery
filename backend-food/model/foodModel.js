@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const foodSchema = new mongoose.Schema({
   foodName: {
@@ -16,6 +16,10 @@ const foodSchema = new mongoose.Schema({
   ingredients: {
     type: String,
     required: true,
+  },
+  categoryIds: {
+    type: [Schema.Types.ObjectId],
+    ref: "FoodCategory",
   },
   createdAt: {
     type: Date,
