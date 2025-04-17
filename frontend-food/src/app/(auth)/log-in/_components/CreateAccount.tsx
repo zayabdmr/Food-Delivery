@@ -3,7 +3,7 @@ import { ChevronLeft } from "lucide-react";
 export const CreateAccount = () => {
   return (
     <div className="flex flex-col gap-6 px-6 py-8 max-w-md w-full mx-auto">
-      <button className="w-fit">
+      <button className="w-[36px] h-[36px] justify-center items-center border-[2px] rounded-[4px] border-[#E4E4E7]">
         <ChevronLeft />
       </button>
 

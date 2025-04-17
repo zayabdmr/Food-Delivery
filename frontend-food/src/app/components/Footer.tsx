@@ -28,16 +28,18 @@ const Footer = () => {
   ];
 
   return (
-    <div className="bg-[#18181B] w-full text-[#FAFAFA]">
-      <div className="bg-[#EF4444] text-[24px] md:text-[30px] font-semibold flex flex-wrap justify-center gap-x-[40px] px-[98px] py-[28px]">
-        {Array(4)
-          .fill("Fresh fast delivered")
-          .map((text, i) => (
-            <h2 key={i}>{text}</h2>
-          ))}
+    <div className="bg-[#18181B] w-fit text-[#FAFAFA]">
+      <div className="bg-[#EF4444] text-[24px] w-fit overflow-hidden md:text-[30px] font-semibold flex flex-wrap justify-center gap-x-[40px] px-[98px] py-[28px]">
+        <div className="flex items-center justify-start w-fit text-nowrap gap-4">
+          {Array(10)
+            .fill("Fresh fast delivered")
+            .map((text, i) => (
+              <h2 key={i}>{text}</h2>
+            ))}
+        </div>
       </div>
 
-      <div className="flex justify-between max-w-7xl px-[88px] pt-[76px] pb-[104px] gap-[112px]">
+      <div className="flex max-w-7xl px-[88px] pt-[76px] pb-[104px] gap-[112px]">
         <div className="min-w-[250px]">
           <img
             src="nomlogo.png"
