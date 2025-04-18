@@ -3,7 +3,7 @@ import {
   createFoodOrder,
   getFoodOrderById,
   getFoodOrders,
-} from "../controller/foodOrder";
+} from "../controller/food-order.js";
 
 export const foodOrderRouter = express.Router();
 

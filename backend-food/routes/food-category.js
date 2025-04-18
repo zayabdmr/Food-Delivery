@@ -3,7 +3,7 @@ import {
   createFoodCategory,
   getFoodCategoryById,
   getFoodsCategory,
-} from "../controller/foodCategory.js";
+} from "../controller/food-category.js";
 
 export const foodCategoryRouter = express.Router();
 

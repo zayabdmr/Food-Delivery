@@ -1,4 +1,4 @@
-import { FoodModel } from "../model/foodModel.js";
+import { FoodModel } from "../model/food-model.js";
 
 export const createFood = async (req, res) => {
   const { foodName, price, image, ingredients, categoryIds } = req.body;
