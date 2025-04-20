@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const foodOrderItem = new mongoose.Schema(
   {
@@ -25,11 +26,7 @@ const foodOrderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    foodOrderItems: {
-      type: Schema.Types.ObjectId,
-      ref: "Food",
-      required: true,
-    },
+    foodOrderItems: [foodOrderItem],
     status: {
       type: String,
       enum: ["PENDING", "CANCELED", "DELIVERED"],

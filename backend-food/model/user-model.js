@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     orderedFoods: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Food",
+        ref: "FoodOrder",
       },
     ],
     isVerified: {

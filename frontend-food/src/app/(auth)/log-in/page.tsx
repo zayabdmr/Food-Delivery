@@ -1,9 +1,9 @@
-import { CreateAccount } from "./_components/CreateAccount";
+import { LogIn } from "./component/LogIn";
 
 export default function Home() {
   return (
     <div>
-      <CreateAccount />
+      <LogIn />
     </div>
   );
 }

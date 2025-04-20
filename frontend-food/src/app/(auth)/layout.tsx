@@ -1,18 +1,18 @@
 import { AuthBigImage } from "../components/AuthBigImage";
 
-export default function Authlayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <div className="flex h-screen overflow-hidden">
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-white">
+      <div className="flex w-full md:w-[40%] items-center justify-center bg-white">
         {children}
       </div>
 
-      <div className="hidden md:flex w-2/3 h-full items-center justify-center p-4">
-        <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg">
+      <div className="hidden md:flex w-[60%] h-full items-center justify-center p-[20px]">
+        <div className="w-full h-full rounded-[16px] overflow-hidden">
           <AuthBigImage />
         </div>
       </div>

@@ -1,13 +1,13 @@
 import express from "express";
 import {
   createFoodCategory,
+  getFoodCategories,
   getFoodCategoryById,
-  getFoodsCategory,
 } from "../controller/food-category.js";
 
 export const foodCategoryRouter = express.Router();
 
 foodCategoryRouter
   .post("/", createFoodCategory)
-  .get("/:id", getFoodCategoryById)
-  .get("/", getFoodsCategory);
+  .get("/", getFoodCategories)
+  .get("/:id", getFoodCategoryById);
