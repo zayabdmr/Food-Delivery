@@ -26,7 +26,7 @@ const foodOrderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    foodOrderItems: [foodOrderItem],
+    foodOrderItems: { type: [foodOrderItem], required: true },
     status: {
       type: String,
       enum: ["PENDING", "CANCELED", "DELIVERED"],

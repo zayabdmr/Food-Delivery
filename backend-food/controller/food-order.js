@@ -1,14 +1,20 @@
 import { FoodOrderModel } from "../model/food-order-model.js";
+import { UserModel } from "../model/user-model.js";
 
 export const createFoodOrder = async (req, res) => {
-  const { userId, foods, totalPrice } = req.body;
+  const { userId, foodOrderItems, totalPrice } = req.body;
 
   try {
     const foodOrder = await FoodOrderModel.create({
       user: userId,
-      foodOrderItems: foods,
+      foodOrderItems: foodOrderItems,
       totalPrice: totalPrice,
     });
+
+    // const updatedUser = await UserModel.findOneAndUpdate(
+    //   { _id: userId },
+    //   { orderedFoods: foodOrder._id }
+    // );
 
     return res.status(200).send({
       success: true,
