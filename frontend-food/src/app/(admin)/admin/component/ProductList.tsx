@@ -34,57 +34,54 @@ export const ProductList = () => {
   }, []);
 
   return (
-    <div className="w-screen h-screen">
-      <div className="space-y-6 px-[40px] py-[24px]">
-        <div className="w-[1171px] h-[582px] bg-[#FFF] rounded-xl p-6">
-          <h4 className="text-[#09090B] text-[20px] font-semibold">
-            Appetizers
+    <div className="w-screen">
+      <div className="space-y-6  py-[24px]">
+        <div className="w-[1171px] bg-[#FFF] rounded-xl p-6">
+          <h4 className="text-[#09090B] text-[20px] font-semibold mb-4">
+            Appetizers ({products.length})
           </h4>
 
-          <div className="flex">
-            <div className="flex w-[270px] h-[225px] flex-col justify-center items-center gap-6 border border-[#EF4444] rounded-[20px] ">
+          <div className="flex flex-wrap gap-4">
+            <div className="w-[270px] h-[241px] flex flex-col justify-center items-center gap-4 border-2 border-dashed border-[#EF4444] rounded-[20px]">
               <button className="w-[40px] h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full">
                 <Plus size={16} color="white" />
               </button>
-
-              <p className="text-[14px] font-medium w-[154px] h-[40px] flex justify-center px-[20px] items-center">
-                Add new Dish to Appetizers
+              <p className="text-[14px] font-medium text-center w-[154px]">
+                Add new Dish to <br /> Appetizers
               </p>
             </div>
-            <div className="flex gap-4 p-4">
-              {products.map((product) => (
-                <div
-                  key={product._id}
-                  className="bg-[#FFF] w-[270px] h-[241px] p-[16px] rounded-[20px] relative overflow-hidden border border-[#E4E4E7]"
-                >
-                  <div className="relative">
-                    <img
-                      className="w-[238px] h-[129px] rounded-[12px] object-cover"
-                      src={product.image}
-                      alt={product.foodName}
-                    />
-                    <button
-                      onClick={() => handleOnclick(product._id)}
-                      className="absolute bottom-[12px] right-[12px] w-[44px] h-[44px] flex items-center justify-center bg-white rounded-full shadow-md"
-                    >
-                      <Pen size={16} className="text-[#EF4444]" />
-                    </button>
-                  </div>
 
-                  <div className="flex items-center justify-between pt-[20px] pb-[8px]">
-                    <h3 className="text-[#EF4444] text-[14px] font-medium">
-                      {product.foodName}
-                    </h3>
-                    <p className="text-[#09090B] text-[12px]">
-                      ${product.price}
-                    </p>
-                  </div>
-                  <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
-                    {product.ingredients}
-                  </p>
+            {products.map((product) => (
+              <div
+                key={product._id}
+                className="bg-[#FFF] w-[270px] h-[241px] p-[16px] rounded-[20px] relative border border-[#E4E4E7]"
+              >
+                <div className="relative">
+                  <img
+                    className="w-[238px] h-[129px] rounded-[12px] object-cover"
+                    src={product.image}
+                    alt={product.foodName}
+                  />
+                  <button
+                    onClick={() => handleOnclick(product._id)}
+                    className="absolute bottom-[12px] right-[12px] w-[44px] h-[44px] flex items-center justify-center bg-white rounded-full shadow-md"
+                  >
+                    <Pen size={16} className="text-[#EF4444]" />
+                  </button>
                 </div>
-              ))}
-            </div>
+
+                <div className="flex items-center justify-between pt-[20px] pb-[8px]">
+                  <h3 className="text-[#EF4444] text-[14px] font-medium line-clamp-1">
+                    {product.foodName}
+                  </h3>
+                  <p className="text-[#09090B] text-[12px]">₮{product.price}</p>
+                </div>
+
+                <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
+                  {product.ingredients}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
