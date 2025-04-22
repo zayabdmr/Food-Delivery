@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/utils";
-import { Pen, Plus } from "lucide-react";
+import { Pen, Plus, UploadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,6 +14,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Trash, X } from "lucide-react";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 type Product = {
   _id: string;
@@ -21,10 +29,17 @@ type Product = {
   price: number;
   image: string;
   ingredients: string;
+  categoryIds: string;
 };
 
 export const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [foodName, setFoodName] = useState("");
+  const [foodPrice, setFoodPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [image, setImage] = useState("");
+  const [ingredients, setIngredients] = useState("");
+
   const router = useRouter();
 
   const handleOnclick = (id: string) => {
@@ -56,60 +71,52 @@ export const ProductList = () => {
             <div className="w-[270px] h-[241px] flex flex-col justify-center items-center gap-4 border-2 border-dashed border-[#EF4444] rounded-[20px]">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-[40px] !h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full !static"
-                  >
-                    <Plus size={16} color="white" />
+                  <Button className="w-[40px] h-[40px] bg-[#EF4444] rounded-full">
+                    <Plus className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
+
+                <DialogContent className="sm:max-w-[500px]">
                   <DialogHeader>
                     <DialogTitle>Add new Dish to Appetizers</DialogTitle>
                   </DialogHeader>
+
                   <div className="flex gap-4 py-4">
-                    <div className="flex flex-col gap-4 ">
-                      <Label htmlFor="name" className="text-right">
-                        Food name
-                      </Label>
-                      <Input
-                        id="name"
-                        placeholder="Type food name"
-                        className="col-span-3"
-                      />
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="foodName">Food name</Label>
+                      <Input id="foodName" placeholder="Type food name" />
                     </div>
-                    <div className="flex flex-col gap-4">
-                      <Label htmlFor="username" className="text-right">
-                        Food price
-                      </Label>
-                      <Input
-                        id="username"
-                        placeholder="Enter price..."
-                        className="col-span-3"
-                      />
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="foodPrice">Food price</Label>
+                      <Input id="foodPrice" placeholder="Enter price..." />
                     </div>
                   </div>
-                  <div className="flex flex-col gap-4">
-                    <Label htmlFor="username" className="text-right">
-                      Ingredients
-                    </Label>
-                    <Input
-                      id="username"
+
+                  <div className="flex flex-col gap-2 mb-4">
+                    <Label htmlFor="ingredients">Ingredients</Label>
+                    <textarea
+                      id="ingredients"
                       placeholder="List ingredients..."
-                      className="w-[380px] h-[138px]"
+                      className="w-full h-[112px] rounded-md border border-gray-300 p-2 resize-none"
                     />
                   </div>
-                  <div className="flex flex-col gap-4">
-                    <Label htmlFor="username" className="text-right">
-                      Food image
-                    </Label>
-                    <Input
-                      type="img"
-                      id="username"
-                      placeholder="List ingredients..."
-                      className="w-[380px] h-[138px]"
-                    />
+
+                  <div className="flex flex-col gap-2 mb-4">
+                    <Label htmlFor="foodImage">Food image</Label>
+                    <div className="w-full h-[160px] border-2 border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-500 rounded-md bg-gray-50">
+                      <div className="text-center">
+                        <UploadIcon className="mx-auto mb-2" />
+                        <p>Choose a file or drag & drop it here</p>
+                        <input
+                          type="file"
+                          id="foodImage"
+                          className="hidden"
+                          onChange={(e) => console.log(e.target.files)}
+                        />
+                      </div>
+                    </div>
                   </div>
+
                   <DialogFooter>
                     <Button type="submit">Add Dish</Button>
                   </DialogFooter>
@@ -132,66 +139,100 @@ export const ProductList = () => {
                     src={product.image}
                     alt={product.foodName}
                   />
-
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="absolute bottom-[12px] right-[12px] w-[44px] h-[44px] flex items-center justify-center bg-white rounded-full shadow-md"
-                      >
+                      <Button className="absolute bottom-[12px] right-[12px] w-[40px] h-[40px] bg-white rounded-full">
                         <Pen size={16} className="text-[#EF4444]" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
+
+                    <DialogContent className="sm:max-w-[500px] p-6 rounded-xl">
                       <DialogHeader>
-                        <DialogTitle>Add new Dish to Appetizers</DialogTitle>
+                        <DialogTitle className="text-lg font-semibold">
+                          Dishes info
+                        </DialogTitle>
                       </DialogHeader>
-                      <div className="flex gap-4 py-4">
-                        <div className="flex flex-col gap-4 ">
-                          <Label htmlFor="name" className="text-right">
-                            Food name
-                          </Label>
+
+                      <div className="flex flex-col gap-4 py-4">
+                        <div className="flex justify-between items-center">
+                          <Label htmlFor="foodName">Dish name</Label>
                           <Input
-                            id="name"
-                            placeholder="Type food name"
-                            className="col-span-3"
+                            id="foodName"
+                            value={product.foodName}
+                            onChange={(e) => setFoodName(e.target.value)}
+                            className="w-[264px]"
                           />
                         </div>
-                        <div className="flex flex-col gap-4">
-                          <Label htmlFor="username" className="text-right">
-                            Food price
-                          </Label>
-                          <Input
-                            id="username"
-                            placeholder="Enter price..."
-                            className="col-span-3"
+
+                        <div className="flex justify-between items-center">
+                          <Label>Dish category</Label>
+                          <Select value={category} onValueChange={setCategory}>
+                            <SelectTrigger className="w-[264px]">
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem
+                                value={product.categoryIds}
+                              ></SelectItem>
+                              <SelectItem value="Main">Main</SelectItem>
+                              <SelectItem value="Dessert">Dessert</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <Label htmlFor="ingredients">Ingredients</Label>
+                          <textarea
+                            id="ingredients"
+                            value={product.ingredients}
+                            onChange={(e) => setIngredients(e.target.value)}
+                            className="w-[264px] h-[100px] rounded-md border border-gray-300 p-2 resize-none text-sm"
                           />
                         </div>
+
+                        <div className="flex justify-between items-center">
+                          <Label htmlFor="foodPrice">Price</Label>
+                          <Input
+                            id="foodPrice"
+                            value={product.price}
+                            onChange={(e) => setFoodPrice(e.target.value)}
+                            className="w-[264px]"
+                          />
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                          <Label>Image</Label>
+                          <div className="relative w-[264px] h-[120px] rounded-md overflow-hidden">
+                            <img
+                              src={product.image}
+                              alt="preview"
+                              className="w-full h-full object-cover rounded-md"
+                            />
+                            <Button
+                              size="icon"
+                              className="absolute top-1 right-1 w-6 h-6 p-0 bg-white text-black rounded-full shadow-md"
+                              onClick={() => setImage("")}
+                            >
+                              <X size={14} />
+                            </Button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-4">
-                        <Label htmlFor="username" className="text-right">
-                          Ingredients
-                        </Label>
-                        <Input
-                          id="username"
-                          placeholder="List ingredients..."
-                          className="w-[380px] h-[138px]"
-                        />
+
+                      <div className="flex justify-between items-center mt-4">
+                        <Button
+                          variant="ghost"
+                          className="text-red-500 hover:text-red-600"
+                        >
+                          <Trash size={16} className="mr-1" />
+                          Delete
+                        </Button>
+                        <DialogFooter>
+                          <Button className="bg-black text-white rounded-md">
+                            Save changes
+                          </Button>
+                        </DialogFooter>
                       </div>
-                      <div className="flex flex-col gap-4">
-                        <Label htmlFor="username" className="text-right">
-                          Food image
-                        </Label>
-                        <Input
-                          type="img"
-                          id="username"
-                          placeholder="List ingredients..."
-                          className="w-[380px] h-[138px]"
-                        />
-                      </div>
-                      <DialogFooter>
-                        <Button type="submit">Add Dish</Button>
-                      </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </div>

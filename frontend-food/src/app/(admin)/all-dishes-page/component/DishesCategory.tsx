@@ -25,6 +25,7 @@ export const DishesCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     "all"
   );
+  const [newCategory, setNewCategory] = useState("");
   const router = useRouter();
 
   const handleOnclick = (id: string) => {
@@ -51,7 +52,7 @@ export const DishesCategory = () => {
         onClick={() => handleOnclick("all")}
         className={`flex items-center gap-2 px-[16px] h-[36px] text-[14px] font-medium rounded-full border transition-colors duration-200 ${
           selectedCategory === "all"
-        } hover:border-[#EF4444] cursor-pointer  `}
+        } hover:border-[#EF4444] cursor-pointer`}
       >
         All Dishes
         <span className="bg-[#18181B] text-white text-[12px] px-2 py-[2px] rounded-full">
@@ -74,31 +75,30 @@ export const DishesCategory = () => {
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-[40px] !h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full !static"
-          >
+          <Button className="w-[40px] h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full !static">
             <Plus size={16} color="white" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[460px]">
           <DialogHeader>
             <DialogTitle>Add new category</DialogTitle>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 ">
-            <Label htmlFor="name" className="text-right">
-              Category name
-            </Label>
+          <div className="flex flex-col gap-2 mt-4">
+            <Label htmlFor="name">Category name</Label>
             <Input
               id="name"
               placeholder="Type category name..."
-              className="col-span-3"
+              className="h-[42px]"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
             />
           </div>
 
-          <DialogFooter>
-            <Button type="submit">Add category</Button>
+          <DialogFooter className="pt-4">
+            <Button type="submit" className="w-[123px] h-[40px]">
+              Add category
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

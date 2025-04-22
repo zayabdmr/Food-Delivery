@@ -25,12 +25,6 @@ const userSchema = new mongoose.Schema(
       enum: ["USER", "ADMIN"],
       default: "USER",
     },
-    // orderedFoods: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "FoodOrder",
-    //   },
-    // ],
     isVerified: {
       type: Boolean,
       required: true,

@@ -10,12 +10,6 @@ export const createFoodOrder = async (req, res) => {
       foodOrderItems: foodOrderItems,
       totalPrice: totalPrice,
     });
-
-    // const updatedUser = await UserModel.findOneAndUpdate(
-    //   { _id: userId },
-    //   { orderedFoods: foodOrder._id }
-    // );
-
     return res.status(200).send({
       success: true,
       foodOrder: foodOrder,
