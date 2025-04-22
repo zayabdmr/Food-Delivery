@@ -6,7 +6,7 @@ export const Header = () => {
       <img src="nlogo.png" className="w-[146px] h-[44px]" />
 
       <div className="flex items-center gap-3">
-        <input className="w-[251px] h-[36px] bg-[#FFF] rounded-full" />
+        <input className="w-[251px] h-[36px] bg-[#FFF] rounded-full py-3 py-2" />
 
         <button className="rounded-full bg-[#F4F4F5] p-2">
           <ShoppingCart size={18} color="black" />

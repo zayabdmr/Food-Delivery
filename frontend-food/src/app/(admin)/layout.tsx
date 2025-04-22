@@ -1,4 +1,4 @@
-import { LeftNavigation } from "./admin/component/LeftNavigation";
+import { LeftNavigation } from "./all-dishes-page/component/LeftNavigation";
 
 export default function AdminLayout({
   children,
