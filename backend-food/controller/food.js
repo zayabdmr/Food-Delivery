@@ -5,98 +5,138 @@ export const createFood = async (req, res) => {
 
   try {
     const food = await FoodModel.create({
-      foodName: foodName,
-      price: price,
-      image: image,
-      ingredients: ingredients,
-      categoryIds: categoryIds,
+      foodName,
+      price,
+      image,
+      ingredients,
+      categoryIds,
     });
-    res
-      .status(200)
-      .send({
-        success: true,
-        food: food,
-      })
-      .end();
+
+    res.status(201).send({
+      success: true,
+      food,
+    });
   } catch (error) {
-    console.log(error, "err");
-    return res
-      .status(400)
-      .send({
-        success: false,
-        message: error,
-      })
-      .end();
+    console.error(error, "err");
+    res.status(400).send({
+      success: false,
+      message: error.message || "Failed to create food",
+    });
   }
 };
 
 export const getFoods = async (__, res) => {
   try {
     const food = await FoodModel.find().populate("categoryIds");
-    return res
-      .status(200)
-      .send({
-        success: true,
-        food: food,
-      })
-      .end();
+    res.status(200).send({
+      success: true,
+      food,
+    });
   } catch (error) {
     console.error(error, "err");
-    return res
-      .status(400)
-      .send({
-        success: false,
-        message: error,
-      })
-      .end();
+    res.status(400).send({
+      success: false,
+      message: error.message || "Failed to fetch foods",
+    });
   }
 };
 
 export const getFoodById = async (req, res) => {
   const { id } = req.params;
+
   try {
     const food = await FoodModel.findById(id).populate("categoryIds");
-    return res
-      .status(200)
-      .send({
-        success: true,
-        food: food,
-      })
-      .end();
+    if (!food) {
+      return res.status(404).send({
+        success: false,
+        message: "Food not found",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      food,
+    });
   } catch (error) {
     console.error(error, "err");
-    return res
-      .status(400)
-      .send({
-        success: false,
-        message: error,
-      })
-      .end();
+    res.status(400).send({
+      success: false,
+      message: error.message || "Failed to fetch food",
+    });
   }
 };
 
-export const getFoodsByCategoryId = async (req, res) => {
+export const getFoodByCategoryId = async (req, res) => {
   const { categoryIds } = req.body;
-  try {
-    const food = await FoodModel.find({ categoryIds: categoryIds }).populate(
-      "categoryIds"
-    );
 
-    return res
-      .status(200)
-      .send({
-        success: true,
-        food: food,
-      })
-      .end();
+  try {
+    const food = await FoodModel.find({ categoryIds }).populate("categoryIds");
+
+    res.status(200).send({
+      success: true,
+      food,
+    });
   } catch (error) {
     console.error(error, "err");
-    return res
-      .status(400)
-      .send({
+    res.status(400).send({
+      success: false,
+      message: error.message || "Failed to fetch food by category",
+    });
+  }
+};
+
+
+export const deleteFoodById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await FoodModel.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).send({
         success: false,
-        message: error,
-      })
-      .end();
+        message: "Food not found",
+      });
+    }
+
+    res.send({
+      success: true,
+      message: "Food deleted",
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: error.message || "Failed to delete food",
+    });
+  }
+};
+
+export const updateFoodById = async (req, res) => {
+  const { id } = req.params;
+  const { foodName, price, image, ingredients, categoryIds } = req.body;
+
+  try {
+    const food = await FoodModel.findByIdAndUpdate(
+      id,
+      { foodName, price, image, ingredients, categoryIds },
+      { new: true, runValidators: true }
+    );
+
+    if (!food) {
+      return res.status(404).send({
+        success: false,
+        message: "Food not found",
+      });
+    }
+
+    res.send({
+      success: true,
+      message: "Food updated",
+      food,
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: error.message || "Failed to update food",
+    });
   }
 };

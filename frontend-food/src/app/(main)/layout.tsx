@@ -8,7 +8,7 @@ export default function MainPageLayout({
 }) {
   return (
     <div>
-      {/* <Header /> */}
+      <Header />
       {children}
       <Footer />
     </div>

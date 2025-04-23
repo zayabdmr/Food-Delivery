@@ -27,7 +27,7 @@ const Footer = () => {
   return (
     <div className="bg-[#18181B] w-full text-[#FAFAFA]">
       <div className="bg-[#EF4444] text-[24px] w-fit overflow-hidden md:text-[30px] font-semibold flex flex-wrap justify-center gap-x-[40px] px-[98px] py-[28px]">
-        <div className="flex items-center justify-start w-fit text-nowrap gap-4">
+        <div className="items-center justify-start w-fit text-nowrap gap-4 flex">
           {Array(8)
             .fill("Fresh fast delivered")
             .map((text, i) => (

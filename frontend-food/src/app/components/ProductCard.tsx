@@ -118,6 +118,9 @@ export const ProductCard = () => {
               </Dialog>
             </div>
 
+
+            <div className="text-green bg-[#FFF] p-2 rounded-lg flex justify-between"></div>
+
             <div className="font-semibold flex items-center justify-between pt-[20px] pb-[8px]">
               <h3 className="text-[#EF4444] text-[20px]">{product.foodName}</h3>
               <p className="text-[#09090B] text-[18px] font-medium">

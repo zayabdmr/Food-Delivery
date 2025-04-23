@@ -3,7 +3,9 @@ import {
   createFood,
   getFoods,
   getFoodById,
-  getFoodsByCategoryId,
+  getFoodByCategoryId,
+  deleteFoodById,
+  updateFoodById,
 } from "../controller/food.js";
 
 export const foodRouter = express.Router();
@@ -12,4 +14,6 @@ foodRouter
   .post("/", createFood)
   .get("/", getFoods)
   .get("/:id", getFoodById)
-  .get("/category/:id", getFoodsByCategoryId);
+  .get("/:id", getFoodByCategoryId)
+  .delete("/:id", deleteFoodById)
+  .put("/:id", updateFoodById);

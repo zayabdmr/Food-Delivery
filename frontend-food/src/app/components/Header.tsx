@@ -1,9 +1,8 @@
-import { Minus, Plus, ShoppingCart, User } from "lucide-react";
+"use client";
+import { Minus, Plus, ShoppingCart, User, X } from "lucide-react";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -34,10 +33,6 @@ export const Header = () => {
 
   const router = useRouter();
 
-  const handleClick = (id: string) => {
-    router.push(`/searchFilter?product=${id}`);
-  };
-
   const handleIncrement = () => setQuantity((prev) => prev + 1);
   const handleDecrement = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -60,7 +55,10 @@ export const Header = () => {
       <img src="nlogo.png" className="w-[146px] h-[44px]" />
 
       <div className="flex items-center gap-3">
-        <input className="w-[251px] h-[36px] bg-[#FFF] rounded-full " />
+        <input
+          className="w-[251px] h-[36px] bg-[#FFF] rounded-full px-4"
+          placeholder="Search food"
+        />
 
         <Sheet>
           <SheetTrigger asChild>
@@ -68,126 +66,126 @@ export const Header = () => {
               <ShoppingCart size={18} color="black" />
             </Button>
           </SheetTrigger>
-          <SheetContent className="bg-[#404040]">
-            <SheetHeader>
-              <SheetTitle className="flex gap-3">
+
+          <SheetContent
+            side="right"
+            className="bg-[#404040] w-[550px] p-0 overflow-y-auto"
+          >
+            <SheetHeader className="p-6">
+              <SheetTitle className="flex gap-3 items-center">
                 <ShoppingCart size={24} color="white" />
-                <h4 className="text-[#FAFAFA] text-[20px] font-semibold">
+                <h4 className="text-white text-[20px] font-semibold">
                   Order detail
                 </h4>
               </SheetTitle>
-              <div className="p-8">
-                <div className="bg-[#FFF] flex justify-around items-center rounded-full">
-                  <button className="bg-[#EF4444] w-[150px] h-[32px] rounded-full ">
-                    <p className="text-[#FAFAFA] text-[18px]">Cart</p>
-                  </button>
 
-                  <button className="bg-[#FFF] w-[150px] h-[36px] roinded-full">
-                    <p className="text-[#09090B] text-[18px]">Order</p>
+              <div className="mt-6 px-4">
+                <div className="flex bg-white rounded-full overflow-hidden">
+                  <button className="bg-[#EF4444] w-1/2 h-[40px]">
+                    <p className="text-white text-[18px]">Cart</p>
+                  </button>
+                  <button className="bg-white w-1/2 h-[40px]">
+                    <p className="text-black text-[18px]">Order</p>
                   </button>
                 </div>
 
-                <div className="bg-[#FFF] w-[471px] h-[540px]">
-                  <h4 className="text-[#09090B] text-[20px] font-semibold">
+                <div className="bg-white rounded-[20px] mt-6 p-6">
+                  <h4 className="text-black text-[20px] font-semibold mb-4">
                     My cart
                   </h4>
 
-                  <div className="flex gap-6 flex-wrap py-6">
-                    {products.map((product) => (
+                  <div className="flex flex-col gap-4">
+                    {products.slice(0, 2).map((product) => (
                       <div
                         key={product._id}
-                        className="bg-[#FFF] w-[398px] h-[342px] p-[16px] rounded-[20px] relative overflow-hidden"
+                        className="flex items-center gap-4 border-b pb-4"
                       >
-                        <div className="relative">
-                          <img
-                            className="w-[365px] h-[210px] rounded-[12px] object-cover"
-                            src={product.image}
-                            alt={product.foodName}
-                          />
+                        <img
+                          src={product.image}
+                          className="w-[60px] h-[60px] rounded-md object-cover"
+                        />
 
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button className="absolute w-[40px] !h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full bottom-[12px] right-[12px] shadow-md">
-                                <Plus className="text-white" />
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
-                              <DialogTitle></DialogTitle>
-                              <div className="flex gap-4 py-4">
-                                <img
-                                  src={product.image}
-                                  className="w-[377px] h-[364px] rounded-xl object-cover"
-                                  alt={product.foodName}
-                                />
-                                <div className="flex flex-col justify-between">
-                                  <div>
-                                    <h2 className="text-[30px] font-semibold text-[#EF4444]">
-                                      {product.foodName}
-                                    </h2>
-                                    <p className="text-[#09090B] text-[16px] mb-4">
-                                      {product.ingredients}
-                                    </p>
-                                    <p className="text-[#09090B] text-sm">
-                                      Total price
-                                    </p>
-                                    <h3 className="text-[24px] font-semibold text-[#09090B] mb-4">
-                                      ₮{product.price * quantity}
-                                    </h3>
-                                    <div className="flex items-center gap-4 mb-4">
-                                      <Button
-                                        variant="outline"
-                                        onClick={handleDecrement}
-                                        className="w-8 h-8 rounded-full"
-                                      >
-                                        <Minus size={16} />
-                                      </Button>
-                                      <span className="text-lg">
-                                        {quantity}
-                                      </span>
-                                      <Button
-                                        variant="outline"
-                                        onClick={handleIncrement}
-                                        className="w-8 h-8 rounded-full"
-                                      >
-                                        <Plus size={16} />
-                                      </Button>
-                                    </div>
-                                  </div>
-                                  <Button className="w-[377px] h-[44px] rounded-full flex justify-between items-center px-6 text-white bg-black">
-                                    Add to cart
-                                    <span className="bg-[#EF4444] rounded-full px-4 py-[2px] text-white ml-2">
-                                      {quantity}
-                                    </span>
-                                  </Button>
-                                </div>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                        </div>
-
-                        <div className="font-semibold flex items-center justify-between pt-[20px] pb-[8px]">
-                          <h3 className="text-[#EF4444] text-[20px]">
+                        <div className="flex-1">
+                          <h3 className="text-[#EF4444] text-[16px] font-semibold">
                             {product.foodName}
                           </h3>
-                          <p className="text-[#09090B] text-[18px] font-medium">
-                            ₮{product.price}
+                          <p className="text-[#71717A] text-[12px] line-clamp-2">
+                            {product.ingredients}
                           </p>
+
+                          <div className="flex items-center gap-2 mt-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="w-6 h-6 p-0"
+                              onClick={handleDecrement}
+                            >
+                              <Minus size={12} />
+                            </Button>
+                            <span className="text-[14px]">{quantity}</span>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="w-6 h-6 p-0"
+                              onClick={handleIncrement}
+                            >
+                              <Plus size={12} />
+                            </Button>
+                          </div>
                         </div>
-                        <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
-                          {product.ingredients}
-                        </p>
+
+                        <div className="flex flex-col items-end gap-2">
+                          <p className="text-black font-medium text-[14px]">
+                            ${product.price}
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="w-6 h-6 p-0"
+                          >
+                            <X size={14} />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
+
+                  <Button className="w-full h-[42px] rounded-full bg-white border mt-6 text-black">
+                    Add food
+                  </Button>
                 </div>
+
+                <div className="bg-white rounded-[20px] mt-6 p-4">
+                  <h4 className="text-black text-[20px] font-semibold mb-4">
+                    Payment info
+                  </h4>
+
+                  <div className="flex justify-between text-[16px]">
+                    <p className="text-[#71717A]">Items</p>
+                    <p className="text-black font-bold">$25.98</p>
+                  </div>
+                  <div className="flex justify-between text-[16px] mt-2">
+                    <p className="text-[#71717A] font-bold">Shipping</p>
+                    <p>$0.99</p>
+                  </div>
+                  <div className="border-t my-3"></div>
+                  <div className="flex justify-between text-[16px]">
+                    <p className="text-[#71717A] font-bold">Total</p>
+                    <p>$26.97</p>
+                  </div>
+                </div>
+
+                <Button className="w-full h-[44px] rounded-full mt-4 bg-[#EF4444] text-white">
+                  Checkout
+                </Button>
               </div>
             </SheetHeader>
           </SheetContent>
         </Sheet>
 
-        <button className="rounded-full bg-[#EF4444] p-2">
+        <Button className="rounded-full bg-[#EF4444] p-2">
           <User size={18} color="white" />
-        </button>
+        </Button>
       </div>
     </div>
   );
