@@ -5,6 +5,7 @@ import { foodCategoryRouter } from "./routes/food-category.js";
 import { foodRouter } from "./routes/food.js";
 import cors from "cors";
 import { foodOrderRouter } from "./routes/food-order.js";
+import { authRouter } from "./routes/auth.js";
 
 const port = 8000;
 const app = express();
@@ -18,6 +19,7 @@ app.use("/user", userRouter);
 app.use("/foodCategory", foodCategoryRouter);
 app.use("/food", foodRouter);
 app.use("/foodOrder", foodOrderRouter);
+app.use("/auth", authRouter);
 
 app.get("/", (req, res) => {
   res.send("hello world");

@@ -20,10 +20,7 @@ const Footer = () => {
     },
     {
       title: "FOLLOW US",
-      icons: [
-        "https://s3-alpha-sig.figma.com/img/51ce/951f/1825dc63909ca7d3c4ac0e5fb0a372ee?Expires=1745798400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=ZvTzlBmPiUAoG8jYKIyomCBtp7t-iy1-jwvcbkxywJLHGxKIDZY8THQ4fqXWUdHt3BNrr7ufvaBpHUD9CJEREfEnarXH0Bypkjeu7M3Ypsb4h9oBDBg~rghAR7~9LNt2dGtWpyGVd6gL2FZK-rplj1ocYaNmp77e5UsvpjGzTlnneGhFURua5rF8l8-x4a7bAVPAZdib7NHeA2mSuuS6MJsZhVEwuvVcX2nMvoVtTFXVBfdwNcwp7~y-mCrp3XLJnrfRHAc1pWkItm9b6E7l8IbD6jqMfjR~Lv5LoqS2cYtjjdz9RmZHbeBXknJniu76h2cYPGvUAuRHKeIIxiUlag__",
-        "https://s3-alpha-sig.figma.com/img/2234/625a/4a532e2cfcc2c4f1e8bc4352831adc84?Expires=1745798400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=qlcJcAosaACgw1tL10Mur2aaBIiDCxSHo6bLfBVT6Y~GmexDJz4YIhuM1WSsHDjqRVtgfkylJXMd2KprJbDpDpwrbIjyrnleSS9MVQSexzKngtKyhLCR1BAcCJPSLKFwMQs3rCASh9tNt~iZTEmWke0CAzQSqQvEpMTAi5Zwu7e7Ab8vMyS-e5RGHpnVuz45lJzZCUx-k6iry-F2VXYIgcwR7LqsC1aJ4a8sHJyngJYdENFJfdOlQWH7SrRhxGbqMZEKCwMAeNzgDF9Joo5Y3M8x0QP8MCpOwOlZld8-KlPGgOMpJ5qUWqV63V0ZQTZCA7Fryk0hKw2Mla9Fy67ZRQ__",
-      ],
+      icons: ["fb.png", "ig.png"],
     },
   ];
 
@@ -31,7 +28,7 @@ const Footer = () => {
     <div className="bg-[#18181B] w-full text-[#FAFAFA]">
       <div className="bg-[#EF4444] text-[24px] w-fit overflow-hidden md:text-[30px] font-semibold flex flex-wrap justify-center gap-x-[40px] px-[98px] py-[28px]">
         <div className="flex items-center justify-start w-fit text-nowrap gap-4">
-          {Array(6)
+          {Array(8)
             .fill("Fresh fast delivered")
             .map((text, i) => (
               <h2 key={i}>{text}</h2>

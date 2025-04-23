@@ -1,5 +1,3 @@
-import { AuthBigImage } from "../components/AuthBigImage";
-
 export default function AuthLayout({
   children,
 }: {
@@ -13,7 +11,11 @@ export default function AuthLayout({
 
       <div className="hidden md:flex w-[60%] h-full items-center justify-center p-[20px]">
         <div className="w-full h-full rounded-[16px] overflow-hidden">
-          <AuthBigImage />
+          <img
+            src="delivery.png"
+            alt="Delivery Background"
+            className="object-cover w-full h-full"
+          />
         </div>
       </div>
     </div>
