@@ -20,7 +20,7 @@ export const createUser = async (req, res) => {
     if (oldUser)
       return res.status(405).send({
         success: "false",
-        message: "user aready created",
+        message: "user already created",
       });
 
     const user = await UserModel.create({
