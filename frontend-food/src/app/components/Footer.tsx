@@ -55,7 +55,7 @@ const Footer = () => {
             )}
             {section.items &&
               section.items.map((item, i) => (
-                <p key={i} className="text-[16px]">
+                <p key={i} className="text-[16px] text-[#FFF]">
                   {item}
                 </p>
               ))}

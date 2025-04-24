@@ -2,6 +2,7 @@ import { configDotenv } from "dotenv";
 import { UserModel } from "../model/user-model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
 configDotenv();
 const secret_key = process.env.SECRET_KEY;
 
@@ -42,3 +43,7 @@ export const login = async (req, res) => {
     });
   }
 };
+
+
+
+
