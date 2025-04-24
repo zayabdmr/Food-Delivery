@@ -19,6 +19,7 @@ type Product = {
 export const ProductCard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const [category, setCategory] = useState();
 
   const router = useRouter();
 
@@ -55,6 +56,10 @@ export const ProductCard = () => {
             key={product._id}
             className="bg-[#FFF] w-[398px] h-[342px] p-[16px] rounded-[20px] relative overflow-hidden"
           >
+            <h2 className="text-[#FFF] text-[30px] font-semibold">
+              {product.categoryName}
+            </h2>
+
             <div className="relative">
               <img
                 className="w-[365px] h-[210px] rounded-[12px] object-cover"
@@ -117,7 +122,6 @@ export const ProductCard = () => {
                 </DialogContent>
               </Dialog>
             </div>
-
 
             <div className="text-green bg-[#FFF] p-2 rounded-lg flex justify-between"></div>
 

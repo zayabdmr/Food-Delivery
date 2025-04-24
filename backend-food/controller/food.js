@@ -1,3 +1,4 @@
+import { FoodCategoryModel } from "../model/food-category-model.js";
 import { FoodModel } from "../model/food-model.js";
 
 export const createFood = async (req, res) => {
@@ -67,14 +68,15 @@ export const getFoodById = async (req, res) => {
 };
 
 export const getFoodByCategoryId = async (req, res) => {
-  const { categoryIds } = req.body;
+  const { categoryIds } = req.params;
 
   try {
     const food = await FoodModel.find({ categoryIds }).populate("categoryIds");
-
+    const category = await FoodCategoryModel.findById(categoryIds);
     res.status(200).send({
       success: true,
-      food,
+      category: category,
+      foods: food,
     });
   } catch (error) {
     console.error(error, "err");
@@ -84,7 +86,6 @@ export const getFoodByCategoryId = async (req, res) => {
     });
   }
 };
-
 
 export const deleteFoodById = async (req, res) => {
   const { id } = req.params;

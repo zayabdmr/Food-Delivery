@@ -7,9 +7,36 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { axiosInstance, cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
+type Order = {
+  _id: string;
+  email: string;
+  food: string;
+  date: Date;
+  total: number;
+  address: string;
+};
 
 export const Orders = () => {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axiosInstance.get("/foodOrder");
+        setOrders(response.data.foodOrder);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   return (
     <div className="p-4 bg-white rounded-lg w-full max-w-[1171px]">
       <div className="flex justify-between items-center mb-4">
@@ -70,8 +97,8 @@ export const Orders = () => {
                   {index < 3
                     ? "Pending"
                     : index < 6
-                    ? "Delivered"
-                    : "Cancelled"}
+                      ? "Delivered"
+                      : "Cancelled"}
                 </span>
               </SelectTrigger>
               <SelectContent>

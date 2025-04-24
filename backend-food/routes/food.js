@@ -14,6 +14,6 @@ foodRouter
   .post("/", createFood)
   .get("/", getFoods)
   .get("/:id", getFoodById)
-  .get("/:id", getFoodByCategoryId)
+  .get("/category/:categoryIds", getFoodByCategoryId)
   .delete("/:id", deleteFoodById)
   .put("/:id", updateFoodById);
