@@ -7,13 +7,14 @@ import {
   deleteFoodById,
   updateFoodById,
 } from "../controller/food.js";
+import { verifyToken } from "../middleware/auth.js";
 
 export const foodRouter = express.Router();
 
 foodRouter
   .post("/", createFood)
-  .get("/", getFoods)
+  .get("/", verifyToken, getFoods)
   .get("/:id", getFoodById)
-  .get("/category/:categoryIds", getFoodByCategoryId)
+  .get("/category/:categoryId", getFoodByCategoryId)
   .delete("/:id", deleteFoodById)
   .put("/:id", updateFoodById);

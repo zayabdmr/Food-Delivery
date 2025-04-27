@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createFoodOrder,
+  deleteFoodOrderById,
   getFoodOrderById,
   getFoodOrders,
   getOrderByUser,
@@ -14,4 +15,5 @@ foodOrderRouter
   .get("/", getFoodOrders)
   .get("/:id", getFoodOrderById)
   .get("/user/:userId", getOrderByUser)
+  .delete("/:id", deleteFoodOrderById)
   .put("/:id", updateFoodOrderById);

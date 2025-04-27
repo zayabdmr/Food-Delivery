@@ -2,27 +2,27 @@ import bcrypt from "bcrypt";
 import { UserModel } from "../model/user-model.js";
 
 export const createUser = async (req, res) => {
-  const { email, password, phoneNumber, address, role, isVerified } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-
+  const { email, password, phoneNumber, address, isVerified } = req.body;
   try {
-    const oldUser = await UserModel.findOne({ email: email });
-    if (oldUser)
+    const oldUser = await UserModel.findOne({ email });
+    if (oldUser) {
       return res.status(405).send({
-        success: "false",
-        message: "user already created",
+        success: false,
+        message: "User already exists",
       });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await UserModel.create({
-      email: email,
+      email,
       password: hashedPassword,
-      phoneNumber: phoneNumber,
-      address: address,
-      role: role,
+      phoneNumber,
+      address,
       isVerified,
     });
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       user: {
         id: user._id,
@@ -31,8 +31,8 @@ export const createUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(error, "err");
-    return res.status(400).json({
+    console.error(error);
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -42,13 +42,13 @@ export const createUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await UserModel.find().select("-password");
-    return res.status(200).json({
+    return res.status(200).send({
       success: true,
-      users: users,
+      users,
     });
   } catch (error) {
-    console.error(error, "err");
-    return res.status(400).json({
+    console.error(error);
+    return res.status(500).send({
       success: false,
       message: error.message,
     });
@@ -59,7 +59,6 @@ export const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await UserModel.findById(id).select("-password");
-
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -67,13 +66,59 @@ export const getUserById = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
+    return res.status(200).send({
       success: true,
       user,
     });
   } catch (error) {
-    console.error(error, "err");
-    return res.status(400).json({
+    console.error(error);
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await UserModel.findByIdAndDelete(id);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
+    return res.status(200).send({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const updateUserById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await UserModel.findByIdAndUpdate(id, req.body, { new: true });
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
+    return res.status(200).send({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
       success: false,
       message: error.message,
     });
