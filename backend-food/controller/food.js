@@ -23,7 +23,7 @@ export const createFood = async (req, res) => {
 
     res.status(201).send({
       success: true,
-      data: food,
+      foods: food,
       message: "Food created successfully",
     });
   } catch (error) {
@@ -51,41 +51,6 @@ export const getFoods = async (req, res) => {
     });
   }
 };
-
-// export const getFoods = async (req, res) => {
-//   try {
-//     const categories = await FoodCategoryModel.find();
-
-//     const response = await fetchFoods(categories);
-
-//     console.log(response, "res");
-
-//     res.status(200).send({
-//       success: true,
-//       data: response,
-//       message: "Foods fetched successfully",
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({
-//       success: false,
-//       message: error.message || "Failed to fetch foods",
-//     });
-//   }
-// };
-
-// const fetchFoods = async (categories) => {
-//   const response = await Promise.all(
-//     categories.map(async (cate) => {
-//       const foods = await FoodModel.find({ category: cate._id });
-//       return {
-//         categoryName: cate.name,
-//         foods: foods,
-//       };
-//     })
-//   );
-//   return response;
-// };
 
 export const getFoodById = async (req, res) => {
   const { id } = req.params;
@@ -115,51 +80,42 @@ export const getFoodById = async (req, res) => {
 };
 
 export const getFoodByCategoryId = async (req, res) => {
-  const {categoryId } = req.query
+  const { categoryId } = req.query;
 
-  const match = categoryId ? {
-    $match: { _id: new Types.ObjectId(categoryId)}
-  } : {
-    $match: {}
-  }
+  const match = categoryId
+    ? {
+        $match: {
+          _id: new Types.ObjectId(categoryId),
+        },
+      }
+    : { $match: {} };
+
   try {
-    
-    const category = await FoodCategoryModel.aggregate([
-      { $match: {_id: categoryId ? new Types.},
-
+    const categoriesWithFoods = await FoodCategoryModel.aggregate([
+      match,
+      {
         $lookup: {
           from: "foods",
           localField: "_id",
           foreignField: "category",
           as: "foods",
         },
+      },
+      {
         $project: {
           name: 1,
-          food: 1,
+          foods: 1,
         },
       },
     ]);
 
-    if (!category) {
-      return res.status(404).send({
-        success: false,
-        message: "Category not found",
-      });
-    }
-
-    const foods = await FoodModel.find({ category: categoryId }).populate(
-      "FoodCategory"
-    );
-
-    res.status(200).send({
+    return res.status(200).send({
       success: true,
-      category,
-      data: foods,
-      message: "Foods fetched by category",
+      foods: categoriesWithFoods,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send({
+    console.error(error, "Error while fetching foods by category");
+    return res.status(500).send({
       success: false,
       message: error.message || "Failed to fetch foods by category",
     });

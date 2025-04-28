@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { UserModel } from "../model/user-model.js";
 
 export const createUser = async (req, res) => {
-  const { email, password, phoneNumber, address, isVerified } = req.body;
+  const { email, password, phoneNumber, address, role, isVerified } = req.body;
   try {
     const oldUser = await UserModel.findOne({ email });
     if (oldUser) {
@@ -19,6 +19,7 @@ export const createUser = async (req, res) => {
       password: hashedPassword,
       phoneNumber,
       address,
+      role,
       isVerified,
     });
 
