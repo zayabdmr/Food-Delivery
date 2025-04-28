@@ -22,6 +22,8 @@ app.use("/food", foodRouter);
 app.use("/foodOrder", foodOrderRouter);
 app.use("/login", authRouter);
 
+console.log();
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

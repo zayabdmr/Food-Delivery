@@ -1,11 +1,12 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/utils";
 import { Plus, Minus } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import axios from "axios";
 
 type Product = {
   _id: string;
@@ -19,13 +20,20 @@ type Product = {
 export const ProductCard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
-  const [category, setCategory] = useState();
+  const [data, setData] = ([]);
+  const searchParams = useSearchParams()
+  const categoryId = searchParams.get("categoryId")
+
+const getFoods = async () => {
+  const foods = await axios.get(`http://localhost:8000${categoryId ? "?/categoryId=" + categoryId: "  " `)
+  setData(foods.data.food)
+  }
+
+useEffect(() => {
+  getFoods
+  })
 
   const router = useRouter();
-
-  const handleClick = (id: string) => {
-    router.push(`/searchFilter?product=${id}`);
-  };
 
   const handleIncrement = () => setQuantity((prev) => prev + 1);
   const handleDecrement = () =>
@@ -35,7 +43,9 @@ export const ProductCard = () => {
     const fetchFood = async () => {
       try {
         const response = await axiosInstance.get("/food");
-        setProducts(response.data.food || []);
+        console.log(response.data.data);
+
+        setProducts(response.data.data || []);
       } catch (error) {
         console.error("Error fetching food:", error);
       }

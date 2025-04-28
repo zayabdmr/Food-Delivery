@@ -1,5 +1,6 @@
 "use client";
 
+import { axiosInstance } from "@/lib/utils";
 import axios from "axios";
 import React, { useRef } from "react";
 
@@ -8,7 +9,7 @@ const LogIn = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const handleOnClick = async () => {
-    const response = await axios.post("http://localhost:8000/login", {
+    const response = await axiosInstance.post("/login", {
       email: emailRef.current?.value,
       password: passwordRef.current?.value,
     });

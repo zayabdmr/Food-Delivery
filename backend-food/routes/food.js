@@ -13,7 +13,7 @@ export const foodRouter = express.Router();
 
 foodRouter
   .post("/", createFood)
-  .get("/", verifyToken, getFoods)
+  .get("/", getFoods)
   .get("/:id", getFoodById)
   .get("/category/:categoryId", getFoodByCategoryId)
   .delete("/:id", deleteFoodById)

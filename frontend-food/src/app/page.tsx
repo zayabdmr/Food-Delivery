@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+import { axiosInstance } from "@/lib/utils";
 import { useEffect } from "react";
 
 export default function Home() {
@@ -7,7 +7,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axios.get("http://localhost:8000", {
+      const response = await axiosInstance.get("/login", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -1,3 +1,4 @@
+"use client";
 import { ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -8,8 +9,9 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { axiosInstance, cn } from "@/lib/utils";
+
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
 type Order = {
   _id: string;

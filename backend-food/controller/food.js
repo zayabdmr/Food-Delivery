@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { FoodCategoryModel } from "../model/food-category-model.js";
 import { FoodModel } from "../model/food-model.js";
 
@@ -114,10 +115,30 @@ export const getFoodById = async (req, res) => {
 };
 
 export const getFoodByCategoryId = async (req, res) => {
-  const { categoryId } = req.params;
+  const {categoryId } = req.query
 
+  const match = categoryId ? {
+    $match: { _id: new Types.ObjectId(categoryId)}
+  } : {
+    $match: {}
+  }
   try {
-    const category = await FoodCategoryModel.findById(categoryId);
+    
+    const category = await FoodCategoryModel.aggregate([
+      { $match: {_id: categoryId ? new Types.},
+
+        $lookup: {
+          from: "foods",
+          localField: "_id",
+          foreignField: "category",
+          as: "foods",
+        },
+        $project: {
+          name: 1,
+          food: 1,
+        },
+      },
+    ]);
 
     if (!category) {
       return res.status(404).send({

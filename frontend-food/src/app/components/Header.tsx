@@ -162,16 +162,16 @@ export const Header = () => {
 
                   <div className="flex justify-between text-[16px]">
                     <p className="text-[#71717A]">Items</p>
-                    <p className="text-black font-bold">$25.98</p>
+                    <p className="text-black font-bold">{} price</p>
                   </div>
                   <div className="flex justify-between text-[16px] mt-2">
                     <p className="text-[#71717A] font-bold">Shipping</p>
-                    <p>$0.99</p>
+                    <p>{}-.99</p>
                   </div>
                   <div className="border-t my-3"></div>
                   <div className="flex justify-between text-[16px]">
                     <p className="text-[#71717A] font-bold">Total</p>
-                    <p>$26.97</p>
+                    <p>{} niit</p>
                   </div>
                 </div>
 
