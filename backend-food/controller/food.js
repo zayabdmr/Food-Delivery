@@ -103,7 +103,7 @@ export const getFoodByCategoryId = async (req, res) => {
       },
       {
         $project: {
-          name: 1,
+          categoryName: 1,
           foods: 1,
         },
       },

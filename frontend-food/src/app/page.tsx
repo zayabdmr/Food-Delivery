@@ -1,6 +1,7 @@
 "use client";
 import { axiosInstance } from "@/lib/utils";
 import { useEffect } from "react";
+import { Img } from "./components/Img";
 
 export default function Home() {
   const fetchUsers = async () => {
@@ -22,5 +23,9 @@ export default function Home() {
     fetchUsers();
   }, []);
 
-  return <div>Home Page</div>;
+  return (
+    <div>
+      <Img></Img>
+    </div>
+  );
 }
