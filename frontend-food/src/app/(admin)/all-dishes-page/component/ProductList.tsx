@@ -1,257 +1,124 @@
 "use client";
-import { useRouter } from "next/navigation";
+
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/utils";
-import { Pen, Plus, UploadIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Trash, X } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+import { AddNewCard } from "./AddNewCard";
+import { FoodCard } from "./FoodCard";
 
-type Product = {
+type Food = {
   _id: string;
   foodName: string;
   price: number;
   image: string;
   ingredients: string;
-  categoryIds: string;
+};
+
+type Category = {
+  _id: string;
+  categoryName: string;
+  foods: Food[];
 };
 
 export const ProductList = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [foodName, setFoodName] = useState("");
-  const [foodPrice, setFoodPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
-  const [ingredients, setIngredients] = useState("");
-
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const handleOnclick = (id: string) => {
-    router.push(`/searchFilter?product=${id}`);
-  };
+  const categoryId = searchParams.get("categoryId");
 
   useEffect(() => {
-    const fetchFood = async () => {
+    const fetchFoods = async () => {
+      setLoading(true);
       try {
-        const response = await axiosInstance.get("/food");
-        setProducts(response.data.food);
+        const response = await axiosInstance.get("/food/category/");
+        setCategories(response.data.foods);
       } catch (error) {
-        console.error("Error fetching food:", error);
+        console.error("Error fetching foods:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchFood();
+    fetchFoods();
   }, []);
 
+  const handleCategoryClick = (id: string | null) => {
+    router.push(id ? `?categoryId=${id}` : "/");
+  };
+
+  const filteredCategories = categoryId
+    ? categories.filter((cat) => cat._id === categoryId)
+    : categories;
+
+  const getTotalCount = () =>
+    categories.reduce((acc, curr) => acc + curr.foods.length, 0);
+
   return (
-    <div className="w-screen">
-      <div className="space-y-6  py-[24px]">
-        <div className="w-[1171px] bg-[#FFF] rounded-xl p-6">
-          <h4 className="text-[#09090B] text-[20px] font-semibold mb-4">
-            Appetizers ({products.length})
-          </h4>
-
-          <div className="flex flex-wrap gap-4">
-            <div className="w-[270px] h-[241px] flex flex-col justify-center items-center gap-4 border-2 border-dashed border-[#EF4444] rounded-[20px]">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="w-[40px] h-[40px] bg-[#EF4444] rounded-full">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-
-                <DialogContent className="sm:max-w-[500px]">
-                  <DialogHeader>
-                    <DialogTitle>Add new Dish to Appetizers</DialogTitle>
-                  </DialogHeader>
-
-                  <div className="flex gap-4 py-4">
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="foodName">Food name</Label>
-                      <Input id="foodName" placeholder="Type food name" />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label htmlFor="foodPrice">Food price</Label>
-                      <Input id="foodPrice" placeholder="Enter price..." />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2 mb-4">
-                    <Label htmlFor="ingredients">Ingredients</Label>
-                    <textarea
-                      id="ingredients"
-                      placeholder="List ingredients..."
-                      className="w-full h-[112px] rounded-md border border-gray-300 p-2 resize-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-2 mb-4">
-                    <Label htmlFor="foodImage">Food image</Label>
-                    <div className="w-full h-[160px] border-2 border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-500 rounded-md bg-gray-50">
-                      <div className="text-center">
-                        <UploadIcon className="mx-auto mb-2" />
-                        <p>Choose a file or drag & drop it here</p>
-                        <input
-                          type="file"
-                          id="foodImage"
-                          className="hidden"
-                          onChange={(e) => console.log(e.target.files)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <DialogFooter>
-                    <Button type="submit">Add Dish</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-
-              <p className="text-[14px] font-medium text-center w-[154px]">
-                Add new Dish to <br /> Appetizers
-              </p>
-            </div>
-
-            {products.map((product) => (
-              <div
-                key={product._id}
-                className="bg-[#FFF] w-[270px] h-[241px] p-[16px] rounded-[20px] relative border border-[#E4E4E7]"
-              >
-                <div className="relative">
-                  <img
-                    className="w-[238px] h-[129px] rounded-[12px] object-cover"
-                    src={product.image}
-                    alt={product.foodName}
-                  />
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button className="absolute bottom-[12px] right-[12px] w-[40px] h-[40px] bg-white rounded-full">
-                        <Pen size={16} className="text-[#EF4444]" />
-                      </Button>
-                    </DialogTrigger>
-
-                    <DialogContent className="sm:max-w-[500px] p-6 rounded-xl">
-                      <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold">
-                          Dishes info
-                        </DialogTitle>
-                      </DialogHeader>
-
-                      <div className="flex flex-col gap-4 py-4">
-                        <div className="flex justify-between items-center">
-                          <Label htmlFor="foodName">Dish name</Label>
-                          <Input
-                            id="foodName"
-                            value={product.foodName}
-                            onChange={(e) => setFoodName(e.target.value)}
-                            className="w-[264px]"
-                          />
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <Label>Dish category</Label>
-                          <Select value={category} onValueChange={setCategory}>
-                            <SelectTrigger className="w-[264px]">
-                              <SelectValue placeholder="Select category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem
-                                value={product.categoryIds}
-                              ></SelectItem>
-                              <SelectItem value="Main">Main</SelectItem>
-                              <SelectItem value="Dessert">Dessert</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <Label htmlFor="ingredients">Ingredients</Label>
-                          <textarea
-                            id="ingredients"
-                            value={product.ingredients}
-                            onChange={(e) => setIngredients(e.target.value)}
-                            className="w-[264px] h-[100px] rounded-md border border-gray-300 p-2 resize-none text-sm"
-                          />
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <Label htmlFor="foodPrice">Price</Label>
-                          <Input
-                            id="foodPrice"
-                            value={product.price}
-                            onChange={(e) => setFoodPrice(e.target.value)}
-                            className="w-[264px]"
-                          />
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <Label>Image</Label>
-                          <div className="relative w-[264px] h-[120px] rounded-md overflow-hidden">
-                            <img
-                              src={product.image}
-                              alt="preview"
-                              className="w-full h-full object-cover rounded-md"
-                            />
-                            <Button
-                              size="icon"
-                              className="absolute top-1 right-1 w-6 h-6 p-0 bg-white text-black rounded-full shadow-md"
-                              onClick={() => setImage("")}
-                            >
-                              <X size={14} />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center mt-4">
-                        <Button
-                          variant="ghost"
-                          className="text-red-500 hover:text-red-600"
-                        >
-                          <Trash size={16} className="mr-1" />
-                          Delete
-                        </Button>
-                        <DialogFooter>
-                          <Button className="bg-black text-white rounded-md">
-                            Save changes
-                          </Button>
-                        </DialogFooter>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-
-                <div className="flex items-center justify-between pt-[20px] pb-[8px]">
-                  <h3 className="text-[#EF4444] text-[14px] font-medium line-clamp-1">
-                    {product.foodName}
-                  </h3>
-                  <p className="text-[#09090B] text-[12px]">₮{product.price}</p>
-                </div>
-
-                <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
-                  {product.ingredients}
-                </p>
-              </div>
-            ))}
-          </div>
+    <div className="bg-white min-h-screen">
+      <section className="w-full px-10 py-8">
+        <h2 className="text-[22px] font-semibold mb-4">Dishes category</h2>
+        <div className="flex gap-2 flex-wrap">
+          <CategoryTab
+            active={!categoryId}
+            label={`All Dishes (${getTotalCount()})`}
+            onClick={() => handleCategoryClick(null)}
+          />
+          {categories.map((cat) => (
+            <CategoryTab
+              key={cat._id}
+              active={categoryId === cat._id}
+              label={`${cat.categoryName} (${cat.foods.length})`}
+              onClick={() => handleCategoryClick(cat._id)}
+            />
+          ))}
+          <Button className="bg-[#EF4444] text-white rounded-full px-3 h-[32px] text-[14px]">
+            <Plus size={16} />
+          </Button>
         </div>
-      </div>
+      </section>
+
+      <section className="px-10 pb-20">
+        {loading ? (
+          <p className="text-center text-2xl">Loading...</p>
+        ) : (
+          filteredCategories.map((category) => (
+            <div key={category._id} className="mb-12">
+              <h3 className="text-[22px] font-semibold mb-4">
+                {category.categoryName} ({category.foods.length})
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <AddNewCard categoryName={category.categoryName} />
+                {category.foods.map((food) => (
+                  <FoodCard key={food._id} food={food} />
+                ))}
+              </div>
+            </div>
+          ))
+        )}
+      </section>
     </div>
   );
 };
+
+const CategoryTab = ({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <span
+    onClick={onClick}
+    className={`px-4 py-2 text-[14px] rounded-full cursor-pointer ${
+      active ? "bg-[#EF4444] text-white" : "bg-[#F4F4F5] text-black"
+    }`}
+  >
+    {label}
+  </span>
+);

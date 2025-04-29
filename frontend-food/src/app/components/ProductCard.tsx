@@ -1,9 +1,9 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/utils";
-import { Plus, Minus, ChevronLeft, Badge, ChevronRight } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,195 +11,147 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import DialogContentInner from "./DialogContentInner";
 
-type WithCategory = {
+type Food = {
   foodName: string;
   price: number;
   image: string;
   ingredients: string;
 };
-type AllData = {
+
+type Category = {
+  _id: string;
   categoryName: string;
-  foods: WithCategory[];
-};
-type Data = {
-  foods: AllData[];
+  foods: Food[];
 };
 
 export const ProductCard = () => {
-  const [foods, setFoods] = useState<Data>();
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const categoryId = searchParams.get("categoryId");
 
-  const fetchFoods = async () => {
-    console.log("working....");
-    setLoading(true);
-    try {
-      const url = categoryId
-        ? `/food/category/?categoryId=${categoryId}`
-        : "/food/category/";
-      const response = await axiosInstance.get(url);
-      console.log("Fetched foods:", response.data);
-      setFoods(response.data);
-    } catch (error) {
-      console.error("Error fetching foods:", error);
-      setFoods({ foods: [] });
-    } finally {
-      setLoading(false);
-    }
+  useEffect(() => {
+    const fetchFoods = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get("/food/category/");
+        setCategories(response.data.foods);
+      } catch (error) {
+        console.error("Error fetching foods:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFoods();
+  }, []);
+
+  const handleCategoryClick = (id: string) => {
+    router.push(`?categoryId=${id}`);
   };
 
-  useEffect(() => {
-    fetchFoods();
-  }, [categoryId]);
-  console.log(foods?.foods[0], "hh");
+  const filteredCategories = categoryId
+    ? categories.filter((cat) => cat._id === categoryId)
+    : categories;
+
   return (
-    <div>
-      <div className="w-screen h-[176px] px-[48px] py-[32px] bg-[#404040] space-y-9">
-        <h2 className="pl-[30px] text-[#FFF] text-[30px] font-semibold">
+    <div className="bg-[#404040] min-h-screen">
+      <section className="w-screen h-[176px] px-[48px] py-[32px] space-y-9">
+        <h2 className="pl-[30px] text-white text-[30px] font-semibold">
           Categories
         </h2>
-
-        <div className="flex space-y-2 items-center">
-          <button className="p-4 text-white hover:bg-gray-600 rounded-full">
-            <ChevronLeft size={16} />
-          </button>
-          <div className="flex gap-[10px]">
-            {foods ? (
-              foods.foods.map((data, index) => (
-                <div
-                  key={index}
-                  className="flex items-center h-[36px] gap-1 px-3 py-2 text-[18px] text-[#18181B] bg-[#FFF] border-[#D4D4D8] rounded-full font-normal hover:bg-[#EF4444] cursor-pointer"
+        <div className="flex items-center space-x-4">
+          <ChevronButton direction="left" />
+          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+            {categories.length > 0 ? (
+              categories.map((cat, idx) => (
+                <span
+                  key={idx}
+                  onClick={() => handleCategoryClick(cat._id)}
+                  className={`px-3 py-2 text-[18px] rounded-full cursor-pointer whitespace-nowrap
+                    ${
+                      categoryId === cat._id
+                        ? "bg-[#EF4444] text-white"
+                        : "bg-white text-[#18181B] hover:bg-[#EF4444] hover:text-white"
+                    }`}
                 >
-                  {data.categoryName}
-                </div>
+                  {cat.categoryName}
+                </span>
               ))
             ) : (
               <p className="text-[#71717A]">No categories available</p>
             )}
           </div>
-          <button className="p-4 text-white hover:bg-gray-600 rounded-full">
-            <ChevronRight size={16} />
-          </button>
+          <ChevronButton direction="right" />
         </div>
-      </div>
+      </section>
 
-      <div className="px-[88px] bg-[#404040] min-h-screen">
+      <section className="px-[88px] py-10">
         {loading ? (
-          <div className="text-white text-center py-10 text-2xl">
-            Loading...
-          </div>
+          <p className="text-white text-center text-2xl">Loading...</p>
+        ) : filteredCategories.length > 0 ? (
+          filteredCategories.map((category, catIdx) => (
+            <div key={catIdx} className="mb-10">
+              <h3 className="text-white text-[30px] font-semibold mb-6">
+                {category.categoryName}
+              </h3>
+              <div className="flex gap-6 flex-wrap">
+                {category.foods.map((food, foodIdx) => (
+                  <FoodCard key={foodIdx} food={food} />
+                ))}
+              </div>
+            </div>
+          ))
         ) : (
-          <div className="py-10">
-            <h2 className="text-[#FFF] text-[30px] font-semibold py-6">
-              {foods?.foods.map((data, index) => {
-                return (
-                  <div key={index}>
-                    <h1>{data.categoryName}</h1>
-                    <div className="flex gap-6 flex-wrap">
-                      {data.foods.map((food, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="bg-[#FFF] w-[398px] h-[342px] p-[16px] rounded-[20px] relative overflow-hidden"
-                          >
-                            <div className="relative">
-                              <img
-                                className="w-[365px] h-[210px] rounded-[12px] object-cover"
-                                src={food.image}
-                                alt={food.foodName}
-                              />
-
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button className="absolute w-[40px] !h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full bottom-[12px] right-[12px] shadow-md">
-                                    <Plus className="text-white" />
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
-                                  <DialogTitle></DialogTitle>
-                                  <DialogContentInner food={food} />
-                                </DialogContent>
-                              </Dialog>
-                            </div>
-
-                            <div className="font-semibold flex items-center justify-between pt-[20px] pb-[8px]">
-                              <h3 className="text-[#EF4444] text-[20px]">
-                                {food.foodName}
-                              </h3>
-                              <p className="text-[#09090B] text-[18px] font-medium">
-                                ₮{food.price}
-                              </p>
-                            </div>
-                            <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
-                              {food.ingredients}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </h2>
-          </div>
+          <p className="text-white text-center text-2xl">No foods found.</p>
         )}
-      </div>
+      </section>
     </div>
   );
 };
 
-const DialogContentInner = ({ food }: { food: food }) => {
-  const [quantity, setQuantity] = useState(1);
-
-  const handleIncrement = () => setQuantity((prev) => prev + 1);
-  const handleDecrement = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
+const ChevronButton = ({ direction }: { direction: "left" | "right" }) => {
+  const Icon = direction === "left" ? ChevronLeft : ChevronRight;
   return (
-    <div className="flex gap-7">
-      <img
-        src={food.image}
-        className="w-[377px] h-[364px] rounded-xl object-cover"
-        alt={food.foodName}
-      />
-      <div className="flex flex-col justify-between">
-        <div>
-          <h2 className="text-[30px] font-semibold text-[#EF4444]">
-            {food.foodName}
-          </h2>
-          <p className="text-[#09090B] text-[16px] mb-35">{food.ingredients}</p>
-          <div className="flex justify-between">
-            <div>
-              <p className="text-[#09090B] text-sm">Total price</p>
-              <h3 className="text-[24px] font-semibold text-[#09090B] mb-4">
-                ₮{food.price * quantity}
-              </h3>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button
-                variant="outline"
-                onClick={handleDecrement}
-                className="w-[44px] h-[44px] rounded-full"
-              >
-                <Minus size={16} />
-              </Button>
-              <span className="text-[18px] font-semibold">{quantity}</span>
-              <Button
-                variant="outline"
-                onClick={handleIncrement}
-                className="w-[44px] h-[44px] rounded-full"
-              >
-                <Plus size={16} />
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Button className="w-[377px] h-[44px] rounded-full flex justify-center items-center font-medium text-white bg-black">
-          Add to cart
-        </Button>
+    <button className="p-4 text-white hover:bg-gray-600 rounded-full">
+      <Icon size={16} />
+    </button>
+  );
+};
+
+const FoodCard = ({ food }: { food: Food }) => {
+  return (
+    <div className="bg-white w-[398px] h-[342px] p-4 rounded-[20px] relative overflow-hidden">
+      <div className="relative">
+        <img
+          src={food.image}
+          alt={food.foodName}
+          className="w-full h-[210px] rounded-[12px] object-cover"
+        />
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="absolute bottom-3 right-3 w-[40px] h-[40px] bg-[#EF4444] rounded-full shadow-md flex justify-center items-center">
+              <Plus className="text-white" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
+            <DialogTitle></DialogTitle>
+            <DialogContentInner food={food} />
+          </DialogContent>
+        </Dialog>
       </div>
+
+      <div className="pt-5 pb-2 flex justify-between items-center font-semibold">
+        <h4 className="text-[#EF4444] text-[20px]">{food.foodName}</h4>
+        <p className="text-[#09090B] text-[18px] font-medium">₮{food.price}</p>
+      </div>
+      <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
+        {food.ingredients}
+      </p>
     </div>
   );
 };

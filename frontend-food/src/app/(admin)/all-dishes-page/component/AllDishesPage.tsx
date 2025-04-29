@@ -16,7 +16,7 @@ export const AllDishesPage = () => {
           <h4 className="text-[#09090B] text-[20px] font-semibold mb-4">
             Dishes category
           </h4>
-          <DishesCategory />
+          {/* <DishesCategory /> */}
         </div>
 
         <ProductList />
