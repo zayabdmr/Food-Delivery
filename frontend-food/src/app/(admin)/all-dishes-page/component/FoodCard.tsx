@@ -8,8 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import DialogContentInner from "@/app/components/DialogContentInner";
-import DialogContentEdit from "./DialogContentEdit";
+import { DialogContentEdit } from "./DialogContentEdit";
 
 type Food = {
   _id: string;
@@ -19,14 +18,19 @@ type Food = {
   ingredients: string;
 };
 
-export const FoodCard = ({ food }: { food: Food }) => {
+type FoodCardProps = {
+  food: Food;
+  refetchDishes: () => void;
+};
+
+export const FoodCard = ({ food, refetchDishes }: FoodCardProps) => {
   return (
-    <div className="bg-white border border-gray-200 w-full h-[342px] p-4 rounded-[20px] relative overflow-hidden shadow-sm hover:shadow-md transition">
+    <div className="bg-white border border-gray-200 w-[271px] h-[241px] p-4 rounded-[20px] relative overflow-hidden shadow-sm hover:shadow-md transition">
       <div className="relative">
         <img
           src={food.image}
           alt={food.foodName}
-          className="w-full h-[210px] rounded-[12px] object-cover"
+          className="w-[238px] h-[129px] rounded-[12px] object-cover"
         />
         <Dialog>
           <DialogTrigger asChild>
@@ -34,9 +38,9 @@ export const FoodCard = ({ food }: { food: Food }) => {
               <Pencil className="text-white" size={16} />
             </Button>
           </DialogTrigger>
-          <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
-            <DialogTitle>Edit Dish</DialogTitle>
-            <DialogContentEdit food={food} />
+          <DialogContent className="w-[475px] h-[660px]">
+            <DialogTitle></DialogTitle>
+            <DialogContentEdit food={food} onSave={refetchDishes} />
           </DialogContent>
         </Dialog>
       </div>
