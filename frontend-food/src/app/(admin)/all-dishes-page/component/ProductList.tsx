@@ -5,8 +5,18 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AddNewCard } from "./AddNewCard";
 import { FoodCard } from "./FoodCard";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { AddNewCard } from "./AddNewCard";
 
 type Food = {
   _id: string;
@@ -58,7 +68,7 @@ export const ProductList = () => {
     categories.reduce((acc, curr) => acc + curr.foods.length, 0);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white min-h-screen rounded-[12px]">
       <section className="w-full px-10 py-8">
         <h2 className="text-[22px] font-semibold mb-4">Dishes category</h2>
         <div className="flex gap-2 flex-wrap">
@@ -75,9 +85,40 @@ export const ProductList = () => {
               onClick={() => handleCategoryClick(cat._id)}
             />
           ))}
-          <Button className="bg-[#EF4444] text-white rounded-full px-3 h-[32px] text-[14px]">
-            <Plus size={16} />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="w-[40px] h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full !static">
+                <Plus size={16} color="white" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[460px]">
+              <DialogHeader>
+                <DialogTitle className="text-[#09090B] text-[18px] font-semibold">
+                  Add new category
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="flex flex-col gap-2 mt-4 text-[14px]">
+                <Label htmlFor="name" className="text-[#09090B] font-medium">
+                  Category name
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="Type category name..."
+                  className="h-[42px] text-[#71717A]"
+                />
+              </div>
+
+              <DialogFooter className="pt-4">
+                <Button
+                  type="submit"
+                  className="w-[123px] h-[40px] text-[14px] text-[#FAFAFA] font-semibold"
+                >
+                  Add category
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </section>
 
@@ -91,7 +132,7 @@ export const ProductList = () => {
                 {category.categoryName} ({category.foods.length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <AddNewCard categoryName={category.categoryName} />
+                <AddNewCard category={category} />
                 {category.foods.map((food) => (
                   <FoodCard key={food._id} food={food} />
                 ))}

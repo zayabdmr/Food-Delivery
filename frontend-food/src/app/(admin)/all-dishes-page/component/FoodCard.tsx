@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import DialogContentInner from "@/app/components/DialogContentInner";
+import DialogContentEdit from "./DialogContentEdit";
 
 type Food = {
   _id: string;
@@ -35,7 +36,7 @@ export const FoodCard = ({ food }: { food: Food }) => {
           </DialogTrigger>
           <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
             <DialogTitle>Edit Dish</DialogTitle>
-            <DialogContentInner food={food} />
+            <DialogContentEdit food={food} />
           </DialogContent>
         </Dialog>
       </div>
