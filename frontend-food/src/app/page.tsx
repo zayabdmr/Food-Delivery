@@ -8,7 +8,7 @@ export default function Home() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await axiosInstance.get("/login", {
+      const response = await axiosInstance.post("/login", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

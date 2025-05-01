@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendMailer = async (email, subject, text) => {
+export const sendMail = async (email, subject, text) => {
   const info = {
     from: `food deliveryu <${process.env.EMAIL}>`,
     to: email,

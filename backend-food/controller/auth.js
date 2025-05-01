@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { sendMail } from "../utils/sendMailer.js";
 
 dotenv.config();
 
@@ -48,29 +49,12 @@ export const login = async (req, res) => {
   }
 };
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: "zayabudmir@gmail.com",
-    pass: "xvdeelthgtfvhzcp",
-  },
-});
-
-export const SendEmail = async (req, res) => {
-  const info = {
-    from: `"Maddison Foo Koch" <{zayabudmir@gmail.com}>`,
-    to: "zayabdmr@gmail.com",
-    subject: "HELLO",
-    text: "hello world",
-  };
-
+export const sendMailer = async (req, res) => {
+  const { email, subject, text } = req.body;
   try {
-    const response = await transporter.sendMail(info);
-    res.send(response);
+    const response = await sendMail(email, subject, text);
+    res.status(200).send({ success: true, data: response });
   } catch (error) {
-    return res.send(error);
+    res.status(500).send({ success: false, error: error });
   }
 };
