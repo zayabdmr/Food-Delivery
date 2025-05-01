@@ -79,7 +79,7 @@ export const AddNewCard = ({ category, refetchDishes }: AddNewCardProps) => {
             <div className="w-[40px] h-[40px] bg-[#EF4444] rounded-full flex items-center justify-center">
               <Plus className="h-4 w-4 text-white" />
             </div>
-            <div className="text-center text-[#18181B] text-[14px] font-medium">
+            <div className="text-center text-[#18181B] text-[14px] font-14px]">
               <p>Add new Dish to</p>
               <p>{category.categoryName}</p>
             </div>
@@ -89,13 +89,13 @@ export const AddNewCard = ({ category, refetchDishes }: AddNewCardProps) => {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
-              <p className="mt-4 text-[#09090B] text-[18px] font-semibold">
+              <p className="text-[#09090B] text-[18px] font-semibold">
                 Add new Dish to {category.categoryName}
               </p>
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex gap-4 py-4 text-[14px]">
+          <div className="flex gap-6 py-4 text-[14px]">
             <div className="flex flex-col gap-2 w-1/2">
               <Label htmlFor="foodName" className="text-[#09090B]">
                 Food name
@@ -118,7 +118,7 @@ export const AddNewCard = ({ category, refetchDishes }: AddNewCardProps) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 mb-4">
+          <div className="flex flex-col gap-2 pb-4">
             <Label htmlFor="ingredients" className="text-[#09090B]">
               Ingredients
             </Label>
@@ -130,12 +130,12 @@ export const AddNewCard = ({ category, refetchDishes }: AddNewCardProps) => {
             />
           </div>
 
-          <div className="flex flex-col gap-2 mb-4">
+          <div className="flex flex-col gap-2 pb-4">
             <Label htmlFor="foodImage" className="text-[#09090B]">
               Food image
             </Label>
 
-            <div className="mb-4">
+            <div className="pb-4">
               <div className="flex justify-center items-center w-full">
                 <label
                   htmlFor="foodImage"

@@ -8,12 +8,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { axiosInstance } from "@/lib/utils";
@@ -80,12 +74,13 @@ export const Header = () => {
               </SheetTitle>
 
               <div className="mt-6 px-4">
-                <div className="flex bg-white rounded-full overflow-hidden">
-                  <button className="bg-[#EF4444] w-1/2 h-[40px]">
-                    <p className="text-white text-[18px]">Cart</p>
+                <div className="flex gap-2 text-[18px]">
+                  <button className=" bg-[#EF4444] h-[40px] w-[230px] text-[#FAFAFA] rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
+                    Cart
                   </button>
-                  <button className="bg-white w-1/2 h-[40px]">
-                    <p className="text-black text-[18px]">Order</p>
+
+                  <button className="bg-[#FFF] h-[40px] w-[230px] text-[#09090B] rounded-full flex items-center justify-center transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
+                    Order
                   </button>
                 </div>
 
@@ -94,7 +89,7 @@ export const Header = () => {
                     My cart
                   </h4>
 
-                  <div className="flex flex-col gap-4">
+                  <div className="w-[471px] h-[540px] flex flex-col gap-4">
                     {products.slice(0, 2).map((product) => (
                       <div
                         key={product._id}

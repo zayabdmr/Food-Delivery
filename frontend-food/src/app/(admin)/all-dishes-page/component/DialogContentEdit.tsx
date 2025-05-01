@@ -60,12 +60,21 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
     }
   };
 
-  return (
-    <div className="space-y-4 ">
-      <h2 className="text-[18px] font-semibold text-[#09090B]">Dishes info</h2>
+  const handleDeleteFood = async () => {
+    try {
+      await axiosInstance.delete(`/food/${food._id}`);
+      alert("Dish deleted successfully");
+      onSave();
+    } catch (error) {
+      console.error("Failed to delete dish:", error);
+      alert("Failed to delete dish");
+    }
+  };
 
+  return (
+    <div className="space-y-3">
       <div className="flex gap-4">
-        <Label className="text-[12px] text-[#71717A] w-[140px]">
+        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
           Dish name
         </Label>
         <Input
@@ -76,7 +85,7 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
       </div>
 
       <div className="flex gap-4">
-        <Label className="text-[12px] text-[#71717A] w-[140px]">
+        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
           Dish category
         </Label>
         <Input
@@ -87,7 +96,7 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
       </div>
 
       <div className="flex gap-4">
-        <Label className="text-[12px] text-[#71717A] w-[140px]">
+        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
           Ingredients
         </Label>
         <textarea
@@ -98,7 +107,9 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
       </div>
 
       <div className="flex gap-4">
-        <Label className="text-[12px] text-[#71717A] w-[140px]">Price</Label>
+        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+          Price
+        </Label>
         <Input
           type="number"
           value={price}
@@ -108,7 +119,9 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
       </div>
 
       <div className="flex gap-4">
-        <Label className="text-[12px] text-[#71717A] w-[140px]">Image</Label>
+        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+          Image
+        </Label>
         {imagePreview ? (
           <div className="relative w-full h-40 rounded-md overflow-hidden">
             <img
@@ -150,7 +163,10 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
       </div>
 
       <div className="pt-4 flex justify-between">
-        <Button className="bg-[#FFF border border-red-500">
+        <Button
+          className="bg-[#FFF] border border-red-500"
+          onClick={handleDeleteFood}
+        >
           <Trash color="red" size={16} />
         </Button>
 

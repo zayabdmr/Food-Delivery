@@ -25,12 +25,12 @@ type FoodCardProps = {
 
 export const FoodCard = ({ food, refetchDishes }: FoodCardProps) => {
   return (
-    <div className="bg-white border border-gray-200 w-[271px] h-[241px] p-4 rounded-[20px] relative overflow-hidden shadow-sm hover:shadow-md transition">
+    <div className="bg-white border border-gray-200 w-[300px] h-[241px] p-4 rounded-[20px] relative overflow-hidden shadow-sm hover:shadow-md transition">
       <div className="relative">
         <img
           src={food.image}
           alt={food.foodName}
-          className="w-[238px] h-[129px] rounded-[12px] object-cover"
+          className="w-[300px] h-[129px] rounded-[12px] object-cover"
         />
         <Dialog>
           <DialogTrigger asChild>
@@ -38,8 +38,10 @@ export const FoodCard = ({ food, refetchDishes }: FoodCardProps) => {
               <Pencil className="text-white" size={16} />
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-[475px] h-[660px]">
-            <DialogTitle></DialogTitle>
+          <DialogContent className="w-[475px] h-[595px]">
+            <DialogTitle className="text-[18px] font-semibold text-[#09090B]">
+              Dishes info
+            </DialogTitle>
             <DialogContentEdit food={food} onSave={refetchDishes} />
           </DialogContent>
         </Dialog>

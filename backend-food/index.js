@@ -1,10 +1,10 @@
 import express, { json } from "express";
 import cors from "cors";
-import { userRouter } from "./routes/user.js"; // 🛠 Зөв зам
+import { userRouter } from "./routes/user.js";
 import { foodRouter } from "./routes/food.js";
 import { foodOrderRouter } from "./routes/food-order.js";
 import { authRouter } from "./routes/auth.js";
-import { foodCategoryRouter } from "./routes/food-category.js"; // Мартсан байсан бол үүнийг бас нэмээрэй
+import { foodCategoryRouter } from "./routes/food-category.js";
 
 import connectDB from "./config/db.js";
 

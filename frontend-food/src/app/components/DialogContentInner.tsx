@@ -33,7 +33,7 @@ export const DialogContentInner = ({ food }: DialogContentInnerProps) => {
   const totalPrice = food.price * quantity;
 
   return (
-    <>
+    <div>
       <div className="flex gap-7">
         <img
           src={food.image}
@@ -106,7 +106,7 @@ export const DialogContentInner = ({ food }: DialogContentInnerProps) => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -11,18 +11,18 @@ export const LeftNavigation = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <button className="text-white text-sm font-medium w-[165px] h-10 bg-[#18181B] rounded-full flex items-center justify-center gap-2 transition-all duration-200 hover:bg-[#3f3f46]">
+      <div className="flex flex-col gap-4 text-[#09090B] text-[14px] font-medium">
+        <button className="w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
           <LayoutDashboard size={22} />
           Food menu
         </button>
 
-        <button className="text-[#09090B] text-sm font-medium w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#f4f4f5] hover:text-[#EF4444]">
+        <button className="w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
           <Truck size={22} />
           Orders
         </button>
 
-        <button className="text-[#09090B] text-sm font-medium w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#f4f4f5] hover:text-[#EF4444]">
+        <button className="w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
           <Settings size={22} />
           Settings
         </button>

@@ -2,6 +2,7 @@ import { UserModel } from "../model/user-model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -44,5 +45,32 @@ export const login = async (req, res) => {
         message: error.message,
       })
       .end();
+  }
+};
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "zayabudmir@gmail.com",
+    pass: "xvdeelthgtfvhzcp",
+  },
+});
+
+export const SendEmail = async (req, res) => {
+  const info = {
+    from: `"Maddison Foo Koch" <{zayabudmir@gmail.com}>`,
+    to: "zayabdmr@gmail.com",
+    subject: "HELLO",
+    text: "hello world",
+  };
+
+  try {
+    const response = await transporter.sendMail(info);
+    res.send(response);
+  } catch (error) {
+    return res.send(error);
   }
 };
