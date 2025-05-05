@@ -1,9 +1,12 @@
+import { Suspense } from "react";
 import { AllDishesPage } from "./component/AllDishesPage";
 
 export default function Home() {
   return (
-    <div>
-      <AllDishesPage />
-    </div>
+    <Suspense>
+      <div>
+        <AllDishesPage />
+      </div>
+    </Suspense>
   );
 }

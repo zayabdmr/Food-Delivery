@@ -2,9 +2,8 @@
 
 import { axiosInstance } from "@/lib/utils";
 import React, { useRef } from "react";
-import { ChevronLeft } from "lucide-react";
 
-const LogIn = () => {
+export const LogIn = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 

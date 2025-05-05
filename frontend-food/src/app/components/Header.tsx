@@ -1,13 +1,5 @@
 "use client";
-import {
-  ChevronRight,
-  MapPin,
-  ShoppingCart,
-  User,
-  X,
-  Minus,
-  Plus,
-} from "lucide-react";
+import { ChevronRight, MapPin, ShoppingCart, User, X } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -29,10 +21,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CardPackage } from "./CardPackage";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
@@ -134,7 +125,6 @@ export const Header = ({ deliveryInputRef }: { deliveryInputRef: any }) => {
             <AlertDialogHeader className="flex flex-col gap-[24px]">
               <AlertDialogDescription></AlertDialogDescription>
               <div className="flex justify-between items-center">
-                {" "}
                 <AlertDialogTitle>Delivery Address</AlertDialogTitle>
                 <AlertDialogCancel className="rounded-full h-[36px] w-[36px] border-none bg-gray-200">
                   <X />
