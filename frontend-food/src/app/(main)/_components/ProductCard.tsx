@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import DialogContentInner from "./DialogContentInner";
 
 type Food = {
+  _id: string;
   foodName: string;
   price: number;
   image: string;
@@ -31,7 +32,6 @@ export const ProductCard = () => {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const categoryId = searchParams.get("categoryId");
 
   useEffect(() => {
@@ -58,6 +58,37 @@ export const ProductCard = () => {
     ? categories.filter((cat) => cat._id === categoryId)
     : categories;
 
+  const createOrder = async (foodId: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axiosInstance.post(
+        "/foodOrder",
+        {
+          totalPrice: 20000,
+          foodOrderItems: [
+            {
+              food: foodId,
+              quantity: 1,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        alert("Захиалга амжилттай илгээгдлээ");
+      } else {
+        console.error("Амжилтгүй:", response.data.message || "Алдаа гарлаа");
+      }
+    } catch (error) {
+      console.error("Захиалга илгээх үед алдаа:", error);
+    }
+  };
+
   return (
     <div className="bg-[#404040] min-h-screen">
       <section className="w-screen h-[176px] px-[48px] py-[32px] space-y-9">
@@ -68,9 +99,9 @@ export const ProductCard = () => {
           <ChevronButton direction="left" />
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {categories.length > 0 ? (
-              categories.map((cat, idx) => (
+              categories.map((cat) => (
                 <span
-                  key={idx}
+                  key={cat._id}
                   onClick={() => handleCategoryClick(cat._id)}
                   className={`px-3 py-2 text-[18px] rounded-full cursor-pointer whitespace-nowrap
                     ${
@@ -94,14 +125,18 @@ export const ProductCard = () => {
         {loading ? (
           <p className="text-white text-center text-2xl">Loading...</p>
         ) : filteredCategories.length > 0 ? (
-          filteredCategories.map((category, catIdx) => (
-            <div key={catIdx} className="mb-10">
+          filteredCategories.map((category) => (
+            <div key={category._id} className="mb-10">
               <h3 className="text-white text-[30px] font-semibold mb-6">
                 {category.categoryName}
               </h3>
               <div className="flex gap-6 flex-wrap">
-                {category.foods.map((food, foodIdx) => (
-                  <FoodCard key={foodIdx} food={food} />
+                {category.foods.map((food) => (
+                  <FoodCard
+                    key={food._id}
+                    food={food}
+                    onOrder={() => createOrder(food._id)}
+                  />
                 ))}
               </div>
             </div>
@@ -123,9 +158,9 @@ const ChevronButton = ({ direction }: { direction: "left" | "right" }) => {
   );
 };
 
-const FoodCard = ({ food }: { food: Food }) => {
+const FoodCard = ({ food, onOrder }: { food: Food; onOrder: () => void }) => {
   return (
-    <div className="bg-white w-[398px] h-[342px] p-4 rounded-[20px] relative overflow-hidden">
+    <div className="bg-white w-100 h-[342px] p-4 rounded-[20px] relative overflow-hidden">
       <div className="relative">
         <img
           src={food.image}
@@ -139,19 +174,24 @@ const FoodCard = ({ food }: { food: Food }) => {
             </Button>
           </DialogTrigger>
           <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
-            <DialogTitle></DialogTitle>
+            <DialogTitle>{food.foodName}</DialogTitle>
             <DialogContentInner food={food} />
+            <div className="mt-4 flex justify-end">
+              <Button onClick={onOrder} className="bg-[#EF4444] text-white">
+                Захиалах
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      <div className="pt-5 pb-2 flex justify-between items-center font-semibold">
-        <h4 className="text-[#EF4444] text-[20px]">{food.foodName}</h4>
-        <p className="text-[#09090B] text-[18px] font-medium">₮{food.price}</p>
+      <div className="pt-[10px] pb-2 flex justify-between items-center font-semibold">
+        <h3 className="text-[#EF4444] text-[24px] leading-8">
+          {food.foodName}
+        </h3>
+        <p className="text-[#09090B] text-[18px] leading-7">₮{food.price}</p>
       </div>
-      <p className="text-[#09090B] text-[14px] font-normal leading-snug line-clamp-2">
-        {food.ingredients}
-      </p>
+      <p className="text-[#09090B] text-[14px] leading-5">{food.ingredients}</p>
     </div>
   );
 };

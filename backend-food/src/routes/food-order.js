@@ -7,11 +7,12 @@ import {
   getOrderByUser,
   updateFoodOrderById,
 } from "../controller/food-order.js";
+import { verifyToken } from "../middleware/auth.js";
 
 export const foodOrderRouter = express.Router();
 
 foodOrderRouter
-  .post("/", createFoodOrder)
+  .post("/", verifyToken, createFoodOrder)
   .get("/", getFoodOrders)
   .get("/:id", getFoodOrderById)
   .get("/user/:userId", getOrderByUser)

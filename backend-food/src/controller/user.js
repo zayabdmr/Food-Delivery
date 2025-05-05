@@ -1,48 +1,27 @@
-import bcrypt from "bcrypt";
 import { UserModel } from "../model/user-model.js";
+import { convertToHash } from "../utils/hash.js";
 
 export const createUser = async (req, res) => {
-  const { email, password, phoneNumber, address, role, isVerified } = req.body;
+  const { password, email } = req.body;
+
   try {
-    const oldUser = await UserModel.findOne({ email });
-    if (oldUser) {
-      return res.status(405).send({
-        success: false,
-        message: "User already exists",
-      });
+    const existingUser = await UserModel.findOne({ email: email });
+    if (existingUser) {
+      return res.send({ success: false, message: "Email already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hash = await convertToHash(password);
+    const data = await UserModel.create({ ...req.body, password: hash });
 
-    const user = await UserModel.create({
-      email,
-      password: hashedPassword,
-      phoneNumber,
-      address,
-      role,
-      isVerified,
-    });
-
-    return res.status(201).json({
-      success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-      },
-    });
+    res.status(201).send({ success: true, data: data });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    res.status(500).send({ success: false, message: error.message || error });
   }
 };
 
-export const getUsers = async (req, res) => {
+export const getUsers = async (_, res) => {
   try {
-    const users = await UserModel.find().select("-password");
+    const users = await UserModel.find();
     return res.status(200).send({
       success: true,
       users,
@@ -59,7 +38,7 @@ export const getUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await UserModel.findById(id).select("-password");
+    const user = await UserModel.findById(id);
     if (!user) {
       return res.status(404).json({
         success: false,

@@ -9,25 +9,22 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      min: 8,
+      select: false,
     },
     phoneNumber: {
       type: String,
       required: true,
-      minlength: 8,
+      min: 8,
     },
     address: {
       type: String,
       required: true,
-      minlength: 8,
     },
     role: {
       type: String,
       enum: ["USER", "ADMIN"],
       default: "USER",
-    },
-    isVerified: {
-      type: Boolean,
-      required: true,
     },
   },
   { timestamps: true }

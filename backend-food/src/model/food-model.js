@@ -16,7 +16,6 @@ const foodSchema = new mongoose.Schema(
     },
     ingredients: {
       type: String,
-      required: true,
     },
     category: {
       type: [Schema.Types.ObjectId],

@@ -6,7 +6,7 @@ export const createFoodOrder = async (req, res) => {
   if (!userId || !foodOrderItems || !totalPrice) {
     return res.status(400).send({
       success: false,
-      message: "userId, foodOrderItems, totalPrice бүгд шаардлагатай",
+      message: "error",
     });
   }
 
@@ -30,7 +30,7 @@ export const createFoodOrder = async (req, res) => {
   }
 };
 
-export const getFoodOrders = async (req, res) => {
+export const getFoodOrders = async (_, res) => {
   try {
     const foodOrders = await FoodOrderModel.find()
       .populate("user")

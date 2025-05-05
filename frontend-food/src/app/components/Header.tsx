@@ -1,16 +1,6 @@
 "use client";
-import {
-  ChevronRight,
-  MapPin,
-  ShoppingCart,
-  User,
-  X,
-  Minus,
-  Plus,
-} from "lucide-react";
-
+import { ChevronRight, MapPin, ShoppingCart, User, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,20 +19,19 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
-
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CardPackage } from "./CardPackage";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import { axiosInstance } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
 interface DecodedToken {
   _id: string;
   address: string;
 }
-import { axiosInstance } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
 type FoodType = {
   foodName: string;
@@ -61,42 +50,45 @@ type FoodType = {
 
 export const Header = ({ deliveryInputRef }: { deliveryInputRef: any }) => {
   const router = useRouter();
+
   const handleToLogin = () => {
     router.push("/log-in");
   };
+
   const [userId, setUserId] = useState<string | null>(null);
-  const [deliveryAddress, setDeliveryAddress] = useState<string | null>(null);
+  const [deliveryAddress, setDeliveryAddress] = useState<string>("");
   const [myCartfoods, setMyCartFoods] = useState<FoodType[]>([]);
+  const [isSelected, setIsSelected] = useState(0);
 
-  const fetchAddress = () => {
-    const token = localStorage.getItem("token");
-    try {
-      const requestAddress = {
-        address: deliveryInputRef.current?.value,
-      };
-
-      axiosInstance.put(`/user`, requestAddress, {
-        headers: {
-          authorization: token,
-        },
-      });
-    } catch (error) {
-      console.error("no token", error);
-    }
+  const handleIsSelected = (id: number) => {
+    setIsSelected(id);
   };
 
   const fetchFoods = () => {
     const storedFoods = window.localStorage.getItem("foods");
     const card = storedFoods ? JSON.parse(storedFoods) : [];
     setMyCartFoods(card);
-    console.log("myCartfoods", myCartfoods);
   };
 
-  const [isSelected, setIsSelected] = useState(0);
+  const fetchAddress = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-  const handleIsSelected = (id: number) => {
-    setIsSelected(id);
+    try {
+      const requestAddress = {
+        address: deliveryAddress,
+      };
+
+      await axiosInstance.put(`/user`, requestAddress, {
+        headers: {
+          authorization: token,
+        },
+      });
+    } catch (error) {
+      console.error("Failed to update address", error);
+    }
   };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -105,14 +97,16 @@ export const Header = ({ deliveryInputRef }: { deliveryInputRef: any }) => {
       setDeliveryAddress(decodedToken.address);
     }
     fetchFoods();
-  }, [myCartfoods.length]);
+  }, []);
 
   const duplicatedPage = [<CardPackage />, <CardPackage />][isSelected];
+
   return (
-    <div className="bg-[#18181B] h-[68px] w-full flex items-center justify-between px-[88px] py-3 fixed z-9999 ">
+    <div className="bg-[#18181B] h-[68px] w-full flex items-center justify-between px-[88px] py-3 fixed z-9999">
       <div className="flex gap-3 items-center">
-        <img src="nlogo.png" className="w-[146px] h-[44px]" />
+        <img src="nlogo.png" alt="Logo" className="w-[146px] h-[44px]" />
       </div>
+
       <div className="flex items-center gap-[13px]">
         <AlertDialog>
           <AlertDialogTrigger>
@@ -126,23 +120,20 @@ export const Header = ({ deliveryInputRef }: { deliveryInputRef: any }) => {
                   <span className="text-[#71717A]">Add location</span>
                 </p>
               )}
-
               <ChevronRight className="text-[#71717A]" />
             </div>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader className="flex flex-col gap-[24px]">
-              <AlertDialogDescription></AlertDialogDescription>
               <div className="flex justify-between items-center">
-                {" "}
                 <AlertDialogTitle>Delivery Address</AlertDialogTitle>
                 <AlertDialogCancel className="rounded-full h-[36px] w-[36px] border-none bg-gray-200">
                   <X />
                 </AlertDialogCancel>
               </div>
               <Textarea
+                value={deliveryAddress}
                 onChange={(e) => setDeliveryAddress(e.target.value)}
-                ref={deliveryInputRef}
                 className="h-[112px]"
                 placeholder="Please provide specific address details such as building number, entrance, and apartment number"
               />
@@ -161,12 +152,9 @@ export const Header = ({ deliveryInputRef }: { deliveryInputRef: any }) => {
 
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              tabIndex={0}
-              className="bg-white rounded-full w-[36px] h-[36px] flex items-center justify-center"
-            >
+            <Button className="bg-white rounded-full w-[36px] h-[36px] flex items-center justify-center">
               {myCartfoods.length > 0 ? (
-                <p className="text-red-700 text-bold">{myCartfoods.length}</p>
+                <p className="text-red-700 font-bold">{myCartfoods.length}</p>
               ) : (
                 <ShoppingCart className="text-[#18181B]" />
               )}
@@ -184,23 +172,23 @@ export const Header = ({ deliveryInputRef }: { deliveryInputRef: any }) => {
               <SheetDescription className="flex w-full justify-between bg-white p-1 rounded-full">
                 <Button
                   onClick={() => handleIsSelected(0)}
-                  className={`px-17 rounded-full w-[227px]  ${
-                    isSelected == 0
+                  className={`px-17 rounded-full w-[227px] ${
+                    isSelected === 0
                       ? "bg-[#EF4444] text-white"
                       : "bg-white text-black"
-                  } `}
+                  }`}
                 >
-                  <div>Cart</div>
+                  Cart
                 </Button>
                 <Button
                   onClick={() => handleIsSelected(1)}
-                  className={`px-17 rounded-full w-[227px]  ${
-                    isSelected == 1
+                  className={`px-17 rounded-full w-[227px] ${
+                    isSelected === 1
                       ? "bg-[#EF4444] text-white"
                       : "bg-white text-black"
-                  } `}
+                  }`}
                 >
-                  <div>Order</div>
+                  Order
                 </Button>
               </SheetDescription>
               {duplicatedPage}
