@@ -1,5 +1,9 @@
 "use client";
 import { ChevronRight, MapPin, ShoppingCart, User, X } from "lucide-react";
+<<<<<<< HEAD
+=======
+
+>>>>>>> d3fc2883294220f9994d8314803c8ffbf16f9777
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   AlertDialog,
@@ -20,6 +24,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+<<<<<<< HEAD
+=======
+
+>>>>>>> d3fc2883294220f9994d8314803c8ffbf16f9777
 import { useEffect, useState } from "react";
 import { CardPackage } from "./CardPackage";
 import { useRouter } from "next/navigation";

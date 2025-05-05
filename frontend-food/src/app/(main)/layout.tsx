@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import Footer from "../components/Footer";
-import { Header } from "../components/Header";
 
 export default function MainPageLayout({
   children,
@@ -13,7 +12,11 @@ export default function MainPageLayout({
 
   return (
     <div>
+<<<<<<< HEAD
       <Header deliveryInputRef={deliveryInputRef} />
+=======
+      {/* <Header /> */}
+>>>>>>> d3fc2883294220f9994d8314803c8ffbf16f9777
       {children}
       <Footer />
     </div>
