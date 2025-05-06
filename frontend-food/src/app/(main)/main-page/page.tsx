@@ -1,5 +1,5 @@
-import { ProductCard } from "@/app/components/ProductCard";
 import { Suspense } from "react";
+import { ProductCard } from "../_components/ProductCard";
 
 export default function Home() {
   return (
