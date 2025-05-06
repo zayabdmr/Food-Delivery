@@ -1,10 +1,10 @@
 "use client";
-import { ArrowLeft, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import { axiosInstance } from "@/lib/utils";
 
 export const ResetPassword = ({
   handleNextPage,
@@ -34,7 +34,7 @@ export const ResetPassword = ({
     }
 
     try {
-      const response = await axios.get("http://localhost:8000/user");
+      const response = await axiosInstance.get("/user");
 
       console.log(response.data);
 

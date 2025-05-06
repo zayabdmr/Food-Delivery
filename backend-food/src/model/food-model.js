@@ -1,16 +1,34 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const foodCategorySchema = new mongoose.Schema(
-  {
-    categoryName: {
-      type: String,
-      required: true,
-    },
+const foodSchema = new mongoose.Schema({
+  foodName: {
+    type: String,
+    required: true,
   },
-  { timestamps: true }
-);
+  price: {
+    type: Number,
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
+  ingredients: {
+    type: String,
+    required: true,
+  },
+  categoryIds: {
+    type: [Schema.Types.ObjectId],
+    ref: "FoodCategory",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-export const FoodCategoryModel = mongoose.model(
-  "FoodCategory",
-  foodCategorySchema
-);
+export const FoodModel = mongoose.model("Food", foodSchema);

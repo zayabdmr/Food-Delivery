@@ -1,12 +1,12 @@
 import express, { json } from "express";
 import cors from "cors";
-import { userRouter } from "./routes/user.js";
-import { foodRouter } from "./routes/food.js";
-import { foodOrderRouter } from "./routes/food-order.js";
-import { authRouter } from "./routes/auth.js";
-import { foodCategoryRouter } from "./routes/food-category.js";
 
 import connectDB from "./config/db.js";
+import { userRouter } from "./src/routes/user.js";
+import { foodCategoryRouter } from "./src/routes/food-category.js";
+import { authRouter } from "./src/routes/auth.js";
+import { foodOrderRouter } from "./src/routes/food-order.js";
+import { foodRouter } from "./src/routes/food.js";
 
 const port = 8000;
 const app = express();

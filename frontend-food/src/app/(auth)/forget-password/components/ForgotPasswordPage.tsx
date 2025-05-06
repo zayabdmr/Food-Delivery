@@ -34,5 +34,5 @@ export const ForgotPasswordPage = () => {
     <CreateNewPassword handlePreviousPage={handlePreviousPage} />,
   ][page];
 
-  return <div> {ForgotPassWordArray}</div>;
+  return <div>{ForgotPassWordArray}</div>;
 };

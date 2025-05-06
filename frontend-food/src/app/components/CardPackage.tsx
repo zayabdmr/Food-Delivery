@@ -5,11 +5,9 @@ import { useEffect, useState } from "react";
 
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -20,6 +18,7 @@ import { SheetClose } from "@/components/ui/sheet";
 import { X } from "lucide-react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { axiosInstance } from "@/lib/utils";
 
 type FoodType = {
   foodName: string;
@@ -71,7 +70,7 @@ export const CardPackage = () => {
   const handleCheckout = async () => {
     if (!userId || !myCartfoods.length) return;
     try {
-      await axios.post("http://localhost:8000/foodOrder", {
+      await axiosInstance.post("/foodOrder", {
         user: userId,
         totalPrice,
         foods: myCartfoods,
@@ -140,7 +139,6 @@ export const CardPackage = () => {
 
   return (
     <div>
-      {" "}
       <div className="flex flex-col gap-6 ">
         <div className="w-full bg-white p-4 rounded-[20px] gap-5 flex flex-col">
           <p className="text-[20px] font-semibold">My cart</p>
@@ -196,7 +194,6 @@ export const CardPackage = () => {
           })}
           <SheetClose className="w-full">
             <div className="w-full">
-              {" "}
               <div className="py-2 cursor-pointer w-full bg-transparent border border-[#EF4444] text-[#EF4444] rounded-full">
                 Add food
               </div>

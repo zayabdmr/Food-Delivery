@@ -4,8 +4,8 @@ import { CreateNewPassword } from "../sign-up/_components/CreateNewPassword";
 export default function Home() {
   return (
     <div>
-      {/* <CreateAccount /> */}
-      <CreateNewPassword />
+      <CreateAccount />
+      {/* <CreateNewPassword /> */}
     </div>
   );
 }

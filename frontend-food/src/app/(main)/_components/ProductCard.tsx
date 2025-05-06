@@ -176,11 +176,6 @@ const FoodCard = ({ food, onOrder }: { food: Food; onOrder: () => void }) => {
           <DialogContent className="md:max-w-[826px] md:max-h-[512px]">
             <DialogTitle>{food.foodName}</DialogTitle>
             <DialogContentInner food={food} />
-            <div className="mt-4 flex justify-end">
-              <Button onClick={onOrder} className="bg-[#EF4444] text-white">
-                Захиалах
-              </Button>
-            </div>
           </DialogContent>
         </Dialog>
       </div>

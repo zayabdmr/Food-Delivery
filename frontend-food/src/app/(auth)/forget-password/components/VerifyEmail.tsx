@@ -1,7 +1,6 @@
 "use client";
-import { ArrowLeft, ChevronLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
-import { Input } from "../../../../components/ui/input";
 import { useRouter } from "next/navigation";
 
 export const VerifyEmail = ({
@@ -17,7 +16,7 @@ export const VerifyEmail = ({
   return (
     <div className="flex items-center justify-around w-full h-full">
       <div className="flex flex-col gap-6 w-[350px]">
-        <Button className="bg-white border text-black w-9 h-9 p-0">
+        <Button className="bg-white border text-black w-9 h-9">
           <div onClick={handlePreviousPage} className="cursor-pointer">
             <ChevronLeft size={16} />
           </div>
