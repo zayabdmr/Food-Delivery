@@ -1,40 +1,116 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import React, { Dispatch, SetStateAction } from "react";
 import { ChevronLeft } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { axiosInstance } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-export const CreateAccount = () => {
+const formSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email" }),
+});
+
+interface CreateAccountProps {
+  setStep: Dispatch<SetStateAction<number>>;
+}
+
+export const CreateAccount = ({ setStep }: CreateAccountProps) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const response = await axiosInstance.post("/user", data);
+      console.log("Registration success:", response.data);
+
+      setStep((prev) => prev + 1);
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
+  };
+
+  const router = useRouter();
   return (
-    <div className="flex flex-col gap-6 px-6 py-8 max-w-sm w-full mx-auto">
-      <Button className="bg-white border text-black w-9 h-9">
-        <div className="cursor-pointer">
-          <ChevronLeft size={16} />
-        </div>
-      </Button>
-
-      <div className="flex w-[350px]">
-        <div className="space-y-1">
-          <h3 className="text-[#09090B] text-[24px] font-semibold">
-            Create your account
-          </h3>
-          <p className="text-[#71717A] text-[16px]">
-            Sign up to explore your favorite dishes.
-          </p>
-        </div>
-        <input
-          type="email"
-          placeholder="Enter your email address"
-          className="w-[416px] h-[36px] px-3 py-2 border border-[#E4E4E7] rounded-md text-[14px]"
-        />
-        <button
-          className="w-[416px] h-[36px] text-[#FAFAFA] text-[14px] font-medium bg-[#E4E4E7] rounded-md cursor-not-allowed"
-          disabled
+    <Card className="w-[407px]">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="flex flex-col gap-6"
         >
-          Let's Go
-        </button>
-        <div className="flex w-[416px] justify-center gap-3 text-[16px]">
-          <p className="text-[#71717A]">Already have an account?</p>
-          <button className="text-[#2563EB] hover:underline">Log in</button>
-        </div>
-      </div>
-    </div>
+          <CardHeader>
+            <Button
+              type="button"
+              className="bg-white border text-black w-9 h-9 p-0"
+              onClick={() => setStep((prev) => prev - 1)}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <CardTitle className="text-[20px] font-semibold">
+              Create Your Account
+            </CardTitle>
+            <CardDescription>
+              Sign up to explore your favorite dishes.
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your email address" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+
+          <CardFooter>
+            <Button className="w-full h-[44px]" type="submit">
+              Let's Go
+            </Button>
+          </CardFooter>
+
+          <div className="flex justify-center gap-3 text-[16px] w-full pb-6">
+            <p className="text-[#71717A]">Already have an account?</p>
+            <button
+              type="button"
+              className="text-[#2563EB] hover:underline"
+              onClick={() => router.push("/log-in")}
+            >
+              Log in
+            </button>
+          </div>
+        </form>
+      </Form>
+    </Card>
   );
 };
