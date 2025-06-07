@@ -40,6 +40,7 @@ export const DialogContentInner = ({ food }: DialogContentInnerProps) => {
           className="w-[377px] h-[364px] rounded-xl object-cover"
           alt={food.foodName}
         />
+
         <div className="flex flex-col justify-between">
           <div>
             <h2 className="text-[30px] font-semibold text-[#EF4444]">

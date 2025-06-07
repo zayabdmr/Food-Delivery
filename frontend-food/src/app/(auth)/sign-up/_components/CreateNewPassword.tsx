@@ -1,51 +1,138 @@
+"use client";
+
+import React, { Dispatch, SetStateAction } from "react";
 import { ChevronLeft } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { axiosInstance } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-export const CreateNewPassword = () => {
+const formSchema = z
+  .object({
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    confirm: z.string(),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords do not match",
+    path: ["confirm"],
+  });
+
+interface CreateNewPasswordProps {
+  setStep: Dispatch<SetStateAction<number>>;
+}
+
+export const CreateNewPassword = ({ setStep }: CreateNewPasswordProps) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      password: "",
+      confirm: "",
+    },
+  });
+
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const response = await axiosInstance.post("/user/password", data);
+      console.log("Password set successfully:", response.data);
+    } catch (error) {
+      console.error("Setting password failed:", error);
+    }
+  };
+  const router = useRouter();
+
   return (
-    <div className="flex flex-col gap-6 px-6 py-8 max-w-sm w-full mx-auto">
-      <button className="w-9 h-9 flex justify-center items-center border border-[#E4E4E7] rounded-md">
-        <ChevronLeft size={16} />
-      </button>
+    <Card className="w-[407px]">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="flex flex-col gap-6"
+        >
+          <CardHeader>
+            <Button
+              type="button"
+              className="bg-white border text-black w-9 h-9 p-0"
+              onClick={() => setStep((prev) => prev - 1)}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <CardTitle className="text-[20px] font-semibold">
+              Create a Strong Password
+            </CardTitle>
+            <CardDescription>Use a mix of letters and numbers.</CardDescription>
+          </CardHeader>
 
-      <div className="space-y-1">
-        <h3 className="text-[#09090B] text-[24px] font-semibold">
-          Create a strong password
-        </h3>
-        <p className="text-[#71717A] text-[16px]">
-          Create a strong password with letters, numbers.
-        </p>
-      </div>
+          <CardContent className="space-y-4">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirm"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirm password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
 
-      <div className="space-y-4">
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-[416px] h-[36px] px-3 py-2 border border-[#E4E4E7] rounded-md text-[14px]"
-        />
+          <CardFooter>
+            <Button className="w-full h-[44px]" type="submit">
+              Let's Go
+            </Button>
+          </CardFooter>
 
-        <input
-          type="password"
-          placeholder="Confirm"
-          className="w-[416px] h-[36px] px-3 py-2 border border-[#E4E4E7] rounded-md text-[14px]"
-        />
-      </div>
-
-      <div className="flex items-center gap-2">
-        <input type="checkbox" className="w-4 h-4" />
-        <label className="text-[14px] text-[#71717A]">Show password</label>
-      </div>
-
-      <button
-        className="w-[416px] h-[36px] text-[#FAFAFA] text-[14px] font-medium bg-[#E4E4E7] rounded-md cursor-not-allowed"
-        disabled
-      >
-        Let's Go
-      </button>
-
-      <div className="flex w-[416px] justify-center gap-3 text-[16px]">
-        <p className="text-[#71717A]">Already have an account?</p>
-        <button className="text-[#2563EB] hover:underline">Log in</button>
-      </div>
-    </div>
+          <div className="flex justify-center gap-3 text-[16px] w-full pb-6">
+            <p className="text-[#71717A]">Already have an account?</p>
+            <button
+              type="button"
+              className="text-[#2563EB] hover:underline"
+              onClick={() => router.push("/log-in")}
+            >
+              Log in
+            </button>
+          </div>
+        </form>
+      </Form>
+    </Card>
   );
 };
