@@ -9,12 +9,12 @@ export default function AuthLayout({
         {children}
       </div>
 
-      <div className="hidden md:flex w-[60%] h-full items-center justify-center p-[20px]">
-        <div className="w-full h-full rounded-[16px] overflow-hidden">
+      <div className="hidden md:flex w-[60%] h-full items-center justify-center p-5">
+        <div className="w-full h-full rounded-2xl overflow-hidden">
           <img
             src="delivery.png"
             alt="Delivery Background"
-            className="object-cover w-full h-full"
+            className="w-full h-full object-cover"
           />
         </div>
       </div>

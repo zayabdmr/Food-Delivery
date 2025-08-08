@@ -1,9 +1,9 @@
-import { CreateAccountPage } from "./_components/CreateAccountPage";
+import { SignUpPage } from "./_components/SignUpPage";
 
 export default function Home() {
   return (
     <div>
-      <CreateAccountPage />
+      <SignUpPage />
     </div>
   );
 }

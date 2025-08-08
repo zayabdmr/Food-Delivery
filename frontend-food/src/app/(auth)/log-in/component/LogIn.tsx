@@ -35,66 +35,52 @@ const loginSchema = z.object({
 export function LogIn() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const router = useRouter();
 
   const handleLogin = async (values: z.infer<typeof loginSchema>) => {
     try {
-      const response = await axiosInstance.post(
-        "/auth",
-        {
-          email: values.email,
-          password: values.password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      const { message, success } = response.data;
-
-      if (success) {
-        router.push("/dashboard");
-      } else {
-        form.setError("email", { type: "manual", message });
-        form.setError("password", { type: "manual", message });
-      }
-    } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || "Login failed";
-      form.setError("email", { type: "manual", message: errorMessage });
-      form.setError("password", { type: "manual", message: errorMessage });
+      const { data } = await axiosInstance.post("/auth", values, {
+        withCredentials: true,
+      });
+      data.success ? router.push("/dashboard") : showError(data.message);
+    } catch (err: any) {
+      showError(err?.response?.data?.message || "Login failed");
     }
   };
 
+  const showError = (message: string) => {
+    form.setError("email", { type: "manual", message });
+    form.setError("password", { type: "manual", message });
+  };
+
   return (
-    <div className="flex justify-center mt-10">
-      <Card className="w-[407px]">
+    <div className="flex justify-center mt-20 px-4 w-full">
+      <Card className="w-[350px] bg-transparent border-none shadow-none">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleLogin)}
             className="flex flex-col gap-6"
           >
-            <CardHeader>
+            <CardHeader className="p-0 mb-2">
               <Button
                 type="button"
-                className="bg-white border text-black w-9 h-9 p-0"
+                className="bg-white border text-black w-9 h-9 p-0 mb-2"
+                onClick={() => router.back()}
               >
                 <ChevronLeft size={16} />
               </Button>
-              <CardTitle className="text-[20px] font-semibold">
+              <CardTitle className="text-[22px] font-semibold">
                 Log in
               </CardTitle>
-              <CardDescription className="text-[16px] text-[#71717A]">
+              <CardDescription className="text-[15px] text-muted-foreground">
                 Log in to enjoy your favorite dishes.
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-4">
+            <CardContent className="flex flex-col gap-4 p-0">
               <FormField
                 control={form.control}
                 name="email"
@@ -102,13 +88,12 @@ export function LogIn() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter your email here" {...field} />
+                      <Input placeholder="Enter your email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="password"
@@ -118,7 +103,7 @@ export function LogIn() {
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter your password here"
+                        placeholder="Enter your password"
                         {...field}
                       />
                     </FormControl>
@@ -128,17 +113,24 @@ export function LogIn() {
               />
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-4">
-              <Button className="w-full h-[44px]" type="submit">
-                Let's Go
+            <p
+              className="underline text-sm text-primary cursor-pointer"
+              onClick={() => router.push("/forget-password")}
+            >
+              Forgot password?
+            </p>
+
+            <CardFooter className="flex flex-col gap-4 p-0">
+              <Button className="w-full h-11" type="submit">
+                Let’s Go
               </Button>
             </CardFooter>
 
-            <div className="flex justify-center gap-3 text-[16px] w-full pb-6">
-              <p className="text-[#71717A]">Don’t have an account?</p>
+            <div className="flex justify-center gap-2 text-sm text-muted-foreground pb-6">
+              <span>Don’t have an account?</span>
               <button
                 type="button"
-                className="text-[#2563EB] hover:underline"
+                className="hover:underline text-primary"
                 onClick={() => router.push("/sign-up")}
               >
                 Sign up

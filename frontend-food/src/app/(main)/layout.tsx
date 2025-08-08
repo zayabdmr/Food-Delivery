@@ -13,7 +13,7 @@ export default function MainPageLayout({
 
   return (
     <div>
-      <Header deliveryInputRef={deliveryInputRef} />
+      {/* <Header deliveryInputRef={deliveryInputRef} /> */}
       {children}
       <Footer />
     </div>
