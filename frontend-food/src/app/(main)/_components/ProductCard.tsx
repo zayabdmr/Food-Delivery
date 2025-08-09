@@ -1,18 +1,9 @@
-// ok
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/lib/utils";
-import FoodCard from "./FoodCard";
-
-type Food = {
-  _id: string;
-  foodName: string;
-  price: number;
-  image: string;
-  ingredients: string;
-};
+import FoodCard, { Food } from "./AddToCart";
 
 type Category = {
   _id: string;
@@ -20,19 +11,33 @@ type Category = {
   foods: Food[];
 };
 
-export const ProductCard = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
+interface ProductCardProps {
+  onAddToCart: (food: Food) => void;
+}
+
+export const ProductCard: React.FC<ProductCardProps> = ({ onAddToCart }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("categoryId");
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchFoods = async () => {
       setLoading(true);
       try {
         const response = await axiosInstance.get("/food/category/");
-        setCategories(response.data.foods);
+        const updatedCategories: Category[] = response.data.foods.map(
+          (cat: Category) => ({
+            ...cat,
+            foods: cat.foods.map((food) => ({
+              ...food,
+              quantity: food.quantity ?? 1,
+            })),
+          })
+        );
+        setCategories(updatedCategories);
       } catch (error) {
         console.error("Error fetching foods:", error);
       } finally {
@@ -45,33 +50,6 @@ export const ProductCard = () => {
 
   const handleCategoryClick = (id: string | null) => {
     router.push(id ? `?categoryId=${id}` : "/");
-  };
-
-  const createOrder = async (foodId: string) => {
-    const token = localStorage.getItem("token");
-
-    try {
-      const response = await axiosInstance.post(
-        "/foodOrder",
-        {
-          totalPrice: 20000,
-          foodOrderItems: [{ food: foodId, quantity: 1 }],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data.success) {
-        alert("Захиалга амжилттай илгээгдлээ");
-      } else {
-        console.error("Амжилтгүй:", response.data.message || "Алдаа гарлаа");
-      }
-    } catch (error) {
-      console.error("Захиалга илгээх үед алдаа:", error);
-    }
   };
 
   const filteredCategories = categoryId
@@ -98,6 +76,7 @@ export const ProductCard = () => {
             >
               All
             </span>
+
             {categories.map((cat) => (
               <span
                 key={cat._id}
@@ -131,7 +110,7 @@ export const ProductCard = () => {
                   <FoodCard
                     key={food._id}
                     food={food}
-                    // onOrder={() => createOrder(food._id)}
+                    onAddToCart={onAddToCart}
                   />
                 ))}
               </div>

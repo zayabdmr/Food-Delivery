@@ -3,15 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { User, ShoppingCart } from "lucide-react";
-import { DeliveryAddress } from "@/app/components/DeliveryAddress";
+import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import MyCart from "@/app/components/MyCart";
+import { DeliveryAddress } from "./DeliveryAddress";
+import { OrderDetail } from "./OrderDetail";
 
-// ----------------------
-// Types
-// ----------------------
 interface DecodedToken {
   _id: string;
   address: string;
@@ -25,24 +21,15 @@ export interface Food {
   quantity: number;
 }
 
-// ----------------------
-// Main Component
-// ----------------------
-export const Navigation = ({ cartItems }: { cartItems: Food[] }) => {
+export default function Navigation({ cartItems }: { cartItems: Food[] }) {
   const router = useRouter();
 
   const [userId, setUserId] = useState<string | null>(null);
   const [deliveryAddress, setDeliveryAddress] = useState("");
 
-  // ----------------------
-  // Handlers
-  // ----------------------
   const handleToLogin = () => router.push("/log-in");
   const handleToMainPage = () => router.push("/");
 
-  // ----------------------
-  // Init on mount
-  // ----------------------
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -53,45 +40,27 @@ export const Navigation = ({ cartItems }: { cartItems: Food[] }) => {
   }, []);
 
   return (
-    <div className="bg-[#18181B] h-[68px] w-full flex items-center justify-between px-[88px] py-3 fixed z-50">
-      {/* Logo */}
+    <div className="fixed top-0 left-0 z-50 w-full h-[68px] bg-[#18181B] px-[88px] py-3 flex items-center justify-between">
       <img
-        onClick={handleToMainPage}
         src="nlogo.png"
         alt="Logo"
+        onClick={handleToMainPage}
         className="w-[146px] h-[44px] cursor-pointer"
       />
 
-      {/* Right section */}
       <div className="flex items-center gap-3">
         <DeliveryAddress
           deliveryAddress={deliveryAddress}
           setDeliveryAddress={setDeliveryAddress}
         />
-
-        {/* Cart */}
-        <Sheet>
-          <SheetTrigger className="relative">
-            <ShoppingCart className="w-6 h-6 text-white" />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                {cartItems.length}
-              </span>
-            )}
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[400px]">
-            <MyCart items={cartItems} />
-          </SheetContent>
-        </Sheet>
-
-        {/* Login button */}
+        <OrderDetail cartItems={cartItems} />
         <Button
           onClick={handleToLogin}
-          className="bg-[#EF4444] rounded-full w-[38px] h-[38px] flex items-center justify-center"
+          className="w-[38px] h-[38px] bg-[#EF4444] rounded-full flex items-center justify-center"
         >
           <User className="text-white" />
         </Button>
       </div>
     </div>
   );
-};
+}

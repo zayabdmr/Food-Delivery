@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { uploadImage } from "../../../utils/image-upload";
+import { uploadImage } from "../../../../utils/image-upload";
 
 export const Img = () => {
   const [file, setFile] = useState<File>();

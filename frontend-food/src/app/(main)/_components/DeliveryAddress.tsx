@@ -10,24 +10,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+
 import { ChevronRight, MapPin, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { axiosInstance } from "@/lib/utils";
 
+interface DeliveryAddressProps {
+  deliveryAddress: string;
+  setDeliveryAddress: (val: string) => void;
+}
+
 export const DeliveryAddress = ({
   deliveryAddress,
   setDeliveryAddress,
-}: {
-  deliveryAddress: string;
-  setDeliveryAddress: (val: string) => void;
-}) => {
+}: DeliveryAddressProps) => {
   const fetchAddress = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
       const requestAddress = { address: deliveryAddress };
-      await axiosInstance.put(`/user`, requestAddress, {
+      await axiosInstance.put("/user", requestAddress, {
         headers: { authorization: token },
       });
     } catch (error) {
@@ -51,21 +54,24 @@ export const DeliveryAddress = ({
           <ChevronRight className="text-[#71717A]" />
         </div>
       </AlertDialogTrigger>
+
       <AlertDialogContent>
-        <AlertDialogHeader className="flex flex-col gap-[24px]">
+        <AlertDialogHeader className="flex flex-col gap-6">
           <div className="flex justify-between items-center">
             <AlertDialogTitle>Delivery Address</AlertDialogTitle>
-            <AlertDialogCancel className="rounded-full h-[36px] w-[36px] border-none bg-gray-200">
+            <AlertDialogCancel className="rounded-full h-9 w-9 border-none bg-gray-200">
               <X />
             </AlertDialogCancel>
           </div>
+
           <Textarea
             value={deliveryAddress}
             onChange={(e) => setDeliveryAddress(e.target.value)}
-            className="h-[112px]"
+            className="h-28"
             placeholder="Please provide specific address details such as building number, entrance, and apartment number"
           />
         </AlertDialogHeader>
+
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction className="bg-[#18181B]" onClick={fetchAddress}>

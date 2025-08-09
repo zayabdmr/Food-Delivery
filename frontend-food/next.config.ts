@@ -1,14 +1,8 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    domains: [],
+  },
 };
 
-export default nextConfig;
-
-// // next.config.js
-// module.exports = {
-//   images: {
-//     domains: ["s3-alpha-sig.figma.com"],
-//   },
-// };
+module.exports = nextConfig;
