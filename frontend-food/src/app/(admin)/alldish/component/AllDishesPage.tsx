@@ -1,4 +1,4 @@
-import { ProductList } from "./ProductList";
+import { ProductList } from "../../orders/component/ProductList";
 
 export const AllDishesPage = () => {
   return (

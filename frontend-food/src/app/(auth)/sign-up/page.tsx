@@ -1,9 +1,7 @@
-import { SignUpPage } from "./_components/SignUpPage";
+import SignUpSteps from "./_components/SignUpSteps";
 
-export default function Home() {
-  return (
-    <div>
-      <SignUpPage />
-    </div>
-  );
+function SignUpPage() {
+  return <SignUpSteps />;
 }
+
+export default SignUpPage;

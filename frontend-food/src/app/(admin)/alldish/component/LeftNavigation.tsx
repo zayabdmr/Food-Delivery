@@ -2,7 +2,7 @@ import { LayoutDashboard, Truck, Settings } from "lucide-react";
 
 export const LeftNavigation = () => {
   return (
-    <div className="w-[205px] h-screen bg-white flex flex-col px-6 pt-9 gap-10 shadow-md">
+    <div className="w-[225px] items-center h-screen bg-white flex flex-col px-6 pt-9 gap-10 shadow-md">
       <div className="flex gap-2 items-center">
         <img
           src="leftNavigation.png"
@@ -24,11 +24,6 @@ export const LeftNavigation = () => {
         <button className="w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
           <Truck size={22} />
           Orders
-        </button>
-
-        <button className="w-[165px] h-10 bg-transparent rounded-full flex items-center pl-6 gap-2 transition-all duration-200 hover:bg-[#18181B] hover:text-[#FAFAFA]">
-          <Settings size={22} />
-          Settings
         </button>
       </div>
     </div>

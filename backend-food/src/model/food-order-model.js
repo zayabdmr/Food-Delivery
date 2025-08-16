@@ -1,40 +1,30 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import mongoose, { Schema } from "mongoose";
 
-const foodOrderItem = new mongoose.Schema({
-  food: {
-    type: Schema.Types.ObjectId,
-    ref: "Food",
+// Food Order Item schema
+const foodOrderItemSchema = new mongoose.Schema(
+  {
+    food: { type: Schema.Types.ObjectId, ref: "Food", required: true },
+    quantity: { type: Number, required: true },
   },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1,
-  },
-});
+  { _id: false } // тусдаа _id үүсгэхгүй
+);
 
+// Food Order schema
 const foodOrderSchema = new mongoose.Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
-    foodOrderItems: {
-      type: [foodOrderItem],
-      required: true,
-    },
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    totalPrice: { type: Number, required: true },
+    foodOrderItems: { type: [foodOrderItemSchema], required: true },
     status: {
       type: String,
-      enum: ["PENDING", "CANCELED", "DELIVERED"],
+      enum: ["PENDING", "CANCELLED", "DELIVERED"],
       default: "PENDING",
     },
+    deliveryMockAddress: { type: String },
+    orderDate: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
 
-export const FoodOrderModel = mongoose.model("FoodOrder", foodOrderSchema);
+const FoodOrderModel = mongoose.model("FoodOrder", foodOrderSchema);
+export default FoodOrderModel;

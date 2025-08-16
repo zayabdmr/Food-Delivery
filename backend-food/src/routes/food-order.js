@@ -12,7 +12,7 @@ import { verifyToken } from "../middleware/auth.js";
 export const foodOrderRouter = express.Router();
 
 foodOrderRouter
-  .post("/", verifyToken, createFoodOrder)
+  .post("/", createFoodOrder)
   .get("/", getFoodOrders)
   .get("/:id", getFoodOrderById)
   .get("/user/:userId", getOrderByUser)

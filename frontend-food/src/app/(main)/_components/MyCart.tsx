@@ -17,79 +17,105 @@ import { jwtDecode } from "jwt-decode";
 import { axiosInstance } from "@/lib/utils";
 
 interface DecodedToken {
-  userId: string;
-  _id: string;
+  userId?: string;
+  _id?: string;
+  exp?: number;
 }
 
 export default function MyCart({ items }: { items: Food[] }) {
   const router = useRouter();
+
   const [cartItems, setCartItems] = useState<Food[]>(items);
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
   const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode(token) as DecodedToken;
-      setUserId(decoded._id);
-    }
+    if (!token) return;
+    try {
+      const decoded = jwtDecode<DecodedToken>(token);
+      if (!decoded.exp || decoded.exp >= Date.now() / 1000) {
+        setUserId(decoded._id || decoded.userId || null);
+      }
+    } catch {}
   }, []);
 
   useEffect(() => {
-    const total = cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-    setTotalPrice(total);
+    setTotalPrice(cartItems.reduce((s, i) => s + i.price * i.quantity, 0));
   }, [cartItems]);
 
-  const updateQuantity = (name: string, delta: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.foodName === name
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
+  useEffect(() => {
+    cartItems.length
+      ? localStorage.setItem("foods", JSON.stringify(cartItems))
+      : localStorage.removeItem("foods");
+  }, [cartItems]);
+
+  const updateQuantity = (name: string, d: number) =>
+    setCartItems((p) =>
+      p.map((i) =>
+        i.foodName === name
+          ? { ...i, quantity: Math.max(1, i.quantity + d) }
+          : i
       )
     );
-  };
 
-  const removeItem = (name: string) => {
-    setCartItems((prev) => prev.filter((item) => item.foodName !== name));
-  };
-
-  const handleCheckoutClick = () => {
-    if (!userId) {
-      setShowLoginAlert(true);
-    } else {
-      handleCheckout();
-    }
-  };
+  const removeItem = (name: string) =>
+    setCartItems((p) => p.filter((i) => i.foodName !== name));
 
   const handleCheckout = async () => {
-    if (!userId || !cartItems.length) return;
+    if (!userId) return setShowLoginAlert(true);
+    if (!cartItems.length) return alert("Your cart is empty");
+    if (totalPrice <= 0) return alert("Invalid total price");
+    if (!deliveryAddress.trim()) return alert("Please enter delivery address");
+
+    setIsCheckingOut(true);
     try {
-      await axiosInstance.post("/foodOrder", {
-        user: userId,
-        totalPrice,
-        foods: cartItems,
-        deliveryMockAddress: deliveryAddress,
-      });
-      console.log("Checkout successful");
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token");
+
+      await axiosInstance.post(
+        `/foodOrder`,
+        {
+          userId,
+          foodOrderItems: cartItems.map((i) => ({
+            food: i._id,
+            quantity: i.quantity,
+          })),
+          totalPrice: +(totalPrice + 0.99).toFixed(2),
+          deliveryMockAddress: deliveryAddress.trim(),
+        },
+        { headers: { Authorization: `Bearer ${token}` }, timeout: 15000 }
+      );
+
       localStorage.removeItem("foods");
       setCartItems([]);
-    } catch (err) {
-      console.error("Checkout failed", err);
+      setDeliveryAddress("");
+      setShowSuccessAlert(true);
+    } catch (err: any) {
+      const status = err.response?.status as number | undefined;
+      const msg: string | undefined = err.response?.data?.message;
+      if (status === 401 || status === 403) {
+        localStorage.removeItem("token");
+        setUserId(null);
+        setShowLoginAlert(true);
+      } else {
+        alert(`Checkout failed: ${msg || "Please try again"}`);
+      }
+    } finally {
+      setIsCheckingOut(false);
     }
   };
 
-  if (cartItems.length === 0) {
+  if (!cartItems.length && !showSuccessAlert)
     return (
-      <div className="p-6 bg-[#FFFFFF] rounded-2xl h-fit">
+      <div className="p-6 bg-white rounded-2xl">
         <h2 className="text-black font-semibold text-xl mb-4">My cart</h2>
-        <div className="bg-gray-100 rounded-xl p-8 flex flex-col items-center text-center space-y-3">
-          <img src="/logo.png" alt="Empty Cart" className="w-16 h-16" />
+        <div className="bg-gray-100 rounded-xl p-8 text-center space-y-3">
+          <img src="/logo.png" alt="Empty" className="w-16 h-16 mx-auto" />
           <h1 className="text-lg font-semibold text-black">
             Your cart is empty
           </h1>
@@ -100,7 +126,6 @@ export default function MyCart({ items }: { items: Food[] }) {
         </div>
       </div>
     );
-  }
 
   return (
     <div className="flex flex-col gap-6 max-h-[90vh] overflow-y-auto pr-2">
@@ -108,50 +133,47 @@ export default function MyCart({ items }: { items: Food[] }) {
         <h2 className="text-[20px] font-semibold text-[#71717A] mb-6">
           My Cart
         </h2>
-
         <div className="space-y-6">
           {cartItems.map(
             ({ foodName, image, ingredients, quantity, price }) => (
-              <div
-                key={foodName}
-                className="border-b border-dashed pb-6 last:border-none last:pb-0"
-              >
+              <div key={foodName} className="border-b pb-6 last:border-none">
                 <div className="flex gap-4">
-                  <div className="relative w-24 h-24 flex-shrink-0">
-                    <img
-                      src={image || "/placeholder.jpg"}
-                      alt={foodName}
-                      className="w-full h-full rounded-xl object-cover"
-                    />
-                  </div>
+                  <img
+                    src={image || "/placeholder.jpg"}
+                    alt={foodName}
+                    className="w-24 h-24 rounded-xl object-cover"
+                  />
                   <div className="flex flex-col justify-between flex-1">
                     <div className="flex justify-between items-start">
-                      <div className="pr-2">
+                      <div>
                         <h3 className="text-red-500 font-bold">{foodName}</h3>
                         <p className="text-black text-sm mt-1">{ingredients}</p>
                       </div>
-                      <div
+                      <button
                         onClick={() => removeItem(foodName)}
-                        className="bg-transparent p-2 flex items-center justify-center cursor-pointer rounded-full border border-[#EF4444] w-[36px] h-[36px]"
+                        className="border border-red-500 rounded-full p-2 hover:bg-red-50"
                       >
-                        <X className="text-[#EF4444]" />
-                      </div>
+                        <X className="text-red-500 w-4 h-4" />
+                      </button>
                     </div>
-
                     <div className="flex justify-between items-center mt-4">
                       <div className="flex items-center gap-2 border rounded-full px-3 py-1">
-                        <button onClick={() => updateQuantity(foodName, -1)}>
-                          <Minus className="w-4 h-4 text-black" />
+                        <button
+                          onClick={() => updateQuantity(foodName, -1)}
+                          disabled={quantity <= 1}
+                          className="disabled:opacity-50"
+                        >
+                          <Minus className="w-4 h-4" />
                         </button>
-                        <span className="w-6 text-center font-semibold text-sm text-black">
+                        <span className="mx-2 min-w-[20px] text-center">
                           {quantity}
                         </span>
                         <button onClick={() => updateQuantity(foodName, 1)}>
-                          <Plus className="w-4 h-4 text-black" />
+                          <Plus className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="font-semibold text-black">
-                        ₮{price * quantity}
+                      <p className="font-semibold">
+                        ₮{(price * quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -162,71 +184,92 @@ export default function MyCart({ items }: { items: Food[] }) {
 
           <div className="flex flex-col gap-3 pt-4">
             <h4 className="font-semibold text-[20px] text-gray-500">
-              Delivery location
+              Delivery location *
             </h4>
             <Textarea
               value={deliveryAddress}
               onChange={(e) => setDeliveryAddress(e.target.value)}
-              placeholder="Please share your complete address"
-              className="min-h-[80px] text-gray-700"
+              placeholder="Complete address"
+              className="min-h-[100px]"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-[20px] gap-5 flex flex-col">
+      <div className="bg-white p-4 rounded-[20px] flex flex-col gap-5">
         <p className="text-[20px] font-semibold">Payment info</p>
         <div className="flex justify-between">
-          <p className="text-[16px] text-[#71717A]">Items</p>
-          <p className="text-[16px] font-bold">₮{totalPrice}</p>
+          <p>Items</p>
+          <p>₮{totalPrice.toFixed(2)}</p>
         </div>
         <div className="flex justify-between">
-          <p className="text-[16px] text-[#71717A]">Shipping</p>
-          <p className="text-[16px] font-bold">₮0.99</p>
+          <p>Shipping</p>
+          <p>₮0.99</p>
         </div>
-        <div className="border border-dashed border-[#71717A]" />
-        <div className="flex justify-between">
-          <p className="text-[16px] text-[#71717A]">Total</p>
-          <p className="text-[16px] font-bold">
-            ₮{(totalPrice + 0.99).toFixed(2)}
-          </p>
+        <div className="border border-dashed" />
+        <div className="flex justify-between font-semibold">
+          <p>Total</p>
+          <p>₮{(totalPrice + 0.99).toFixed(2)}</p>
         </div>
-
         <Button
-          onClick={handleCheckoutClick}
-          className="text-white bg-[#EF4444] rounded-full py-2"
+          onClick={handleCheckout}
+          disabled={isCheckingOut || !deliveryAddress.trim()}
+          className="bg-red-500 hover:bg-red-600 text-white rounded-full"
         >
-          Checkout
+          {isCheckingOut ? "Processing..." : "Checkout"}
         </Button>
       </div>
 
       {showLoginAlert && (
         <AlertDialog open={showLoginAlert} onOpenChange={setShowLoginAlert}>
-          <AlertDialogContent className="w-[450px]">
-            <div className="flex justify-end">
-              <button onClick={() => setShowLoginAlert(false)}>
-                <X className="w-5 h-5 text-gray-500 hover:text-black" />
-              </button>
-            </div>
-            <AlertDialogHeader className="flex flex-col items-center">
-              <AlertDialogTitle className="text-[24px] font-semibold">
-                You need to log in first
-              </AlertDialogTitle>
-              <AlertDialogDescription className="mt-2 mb-4 text-center">
+          <AlertDialogContent>
+            <AlertDialogHeader className="text-center">
+              <AlertDialogTitle>You need to log in first</AlertDialogTitle>
+              <AlertDialogDescription>
                 Please log in or sign up to complete your order.
               </AlertDialogDescription>
-              <div className="flex gap-4">
+              <div className="flex gap-3 mt-4">
                 <Button
-                  onClick={() => router.push("/log-in")}
-                  className="bg-gray-200 text-black px-6 w-[140px] h-[40px]"
+                  onClick={() => router.push("/login")}
+                  className="bg-white text-black hover:bg-black hover:text-white border-2 flex-1"
                 >
                   Log in
                 </Button>
                 <Button
                   onClick={() => router.push("/sign-up")}
-                  className="bg-gray-200 text-black px-6 w-[140px] h-[40px]"
+                  className="bg-white text-black hover:bg-black hover:text-white border-2 flex-1"
                 >
                   Sign up
+                </Button>
+              </div>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {showSuccessAlert && (
+        <AlertDialog open={showSuccessAlert} onOpenChange={setShowSuccessAlert}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-center">
+                Your order has been successfully placed!
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                <img
+                  src="/boy.png"
+                  alt="Success"
+                  className="mx-auto w-[200px] h-[265px]"
+                />
+              </AlertDialogDescription>
+              <div className="flex justify-center">
+                <Button
+                  onClick={() => {
+                    setShowSuccessAlert(false);
+                    setTimeout(() => router.push("/"), 300);
+                  }}
+                  className="bg-gray-200 text-black rounded-full hover:text-white pt-2 w-[200px]"
+                >
+                  Back to home
                 </Button>
               </div>
             </AlertDialogHeader>

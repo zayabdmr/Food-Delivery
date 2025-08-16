@@ -1,106 +1,98 @@
-const Footer = () => {
-  const menuSections = [
-    {
-      title: "NOMNOM",
-      items: ["Home", "Contact us", "Delivery zone"],
-    },
-    {
-      title: "MENU",
-      items: ["Appetizers", "Salads", "Pizzas", "Main dishes", "Desserts"],
-    },
-    {
-      title: ".",
-      items: [
-        "Side dish",
-        "Brunch",
-        "Desserts",
-        "Beverages",
-        "Fish & Sea foods",
-      ],
-    },
-    {
-      title: "FOLLOW US",
-      icons: ["fb.png", "ig.png"],
-    },
-  ];
+"use client";
+import { useRouter } from "next/navigation";
+
+export const Footer = () => {
+  const router = useRouter();
+  const home = () => router.push("/");
 
   return (
-    <footer className="bg-[#18181B] text-[#FAFAFA] w-full">
-      {/* Moving text banner */}
-      <div className="bg-[#EF4444] font-semibold text-[24px] md:text-[30px] px-[98px] py-[28px] flex flex-wrap justify-center gap-x-[40px] overflow-hidden w-fit">
-        <div className="flex gap-4 items-center whitespace-nowrap">
-          {Array(8)
-            .fill("Fresh fast delivered")
-            .map((text, i) => (
-              <h2 key={i}>{text}</h2>
-            ))}
+    <div className="w-full flex flex-col items-center bg-[#18181B] gap-12 md:gap-[76px] py-10 md:py-0">
+      <div className="marquee-container h-[60px] md:h-[92px] bg-[#EF4444] mt-6 md:mt-[60px] flex items-center w-full">
+        <div className="marquee-content">
+          {[...Array(40)].map((_, idx) => (
+            <span
+              key={idx}
+              className="marquee-item text-white text-base md:text-[20px] font-semibold mx-6 md:mx-12"
+            >
+              Fresh fast delivered
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* Footer content */}
-      <div className="flex max-w-7xl px-[88px] pt-[76px] pb-[104px] gap-[112px]">
-        {/* Logo and tagline */}
-        <div className="min-w-[250px]">
-          <img
-            src="nomlogo.png"
-            alt="NomNom Logo"
-            className="w-[46px] h-[38px] mb-2"
-          />
-          <p className="text-[12px] text-[#F4F4F5]">Swift delivery</p>
-        </div>
-
-        {/* Footer columns */}
-        {menuSections.map((section, index) => (
-          <div key={index} className="flex flex-col gap-3 min-w-[150px]">
-            {section.title && (
-              <p className="text-[#71717A] text-[16px] font-semibold mb-1">
-                {section.title}
-              </p>
-            )}
-
-            {/* Items list */}
-            {section.items?.map((item, i) => (
-              <p key={i} className="text-[16px] text-white">
-                {item}
-              </p>
-            ))}
-
-            {/* Social icons */}
-            {section.icons && (
-              <div className="flex gap-4">
-                {section.icons.map((icon, i) => (
-                  <img
-                    key={i}
-                    src={icon}
-                    alt={`social-icon-${i}`}
-                    className="w-[28px] h-[28px]"
-                  />
-                ))}
-              </div>
-            )}
+      <div className="flex flex-col md:flex-row w-full px-6 md:px-28 gap-10 md:gap-[400px] items-start">
+        <div className="flex flex-col items-center md:items-start gap-3">
+          <img src="logo.png" className="w-[46px] h-[38px]" alt="Logo" />
+          <div className="flex flex-col items-center md:items-start">
+            <div className="flex text-lg md:text-[20px] font-semibold">
+              <p className="text-[#FAFAFA]">Nom</p>
+              <p className="text-[#EF4444]">Nom</p>
+            </div>
+            <p className="text-[#F4F4F5] text-xs md:text-[12px]">
+              Swift delivery
+            </p>
           </div>
-        ))}
+        </div>
+
+        <div className="flex flex-wrap md:flex-nowrap items-start gap-10 md:gap-[112px]">
+          <div className="flex flex-col items-start gap-4 text-sm md:text-[16px] text-white">
+            <p className="text-[#71717A]">NOMNOM</p>
+            <p className="cursor-pointer" onClick={home}>
+              Home
+            </p>
+            <p>Contact us</p>
+            <p>Delivery zone</p>
+          </div>
+
+          <div className="flex flex-wrap md:flex-nowrap items-start gap-8 md:gap-[56px]">
+            <div className="flex flex-col items-start gap-4 text-sm md:text-[16px] text-white">
+              <p className="text-[#71717A]">MENU</p>
+              <p>Appetizers</p>
+              <p>Salads</p>
+              <p>Pizzas</p>
+              <p>Lunch favorites</p>
+              <p>Main dishes</p>
+            </div>
+            <div className="flex flex-col items-start gap-4 text-sm md:text-[16px] text-white">
+              <p className="opacity-0">o</p>
+              <p>Side dish</p>
+              <p>Brunch</p>
+              <p>Desserts</p>
+              <p>Beverages</p>
+              <p>Fish & Sea foods</p>
+            </div>
+
+            <div className="flex flex-col items-start gap-4">
+              <p className="text-[#71717A] text-sm md:text-[16px]">FOLLOW US</p>
+              <div className="flex py-1 justify-center items-start gap-4">
+                <img
+                  src="fb.png"
+                  className="w-[28px] h-[28px]"
+                  alt="Facebook"
+                />
+                <img
+                  src="ig.png"
+                  className="w-[28px] h-[28px]"
+                  alt="Instagram"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Divider */}
-      <hr className="border-[#3F3F46] mx-[88px]" />
-
-      {/* Bottom section */}
-      <div className="text-[#71717A] text-[14px] flex flex-col md:flex-row justify-between px-[88px] py-[32px] gap-4 md:gap-14">
-        <div className="flex gap-1 items-center">
-          <p>Copyright 2024</p>
+      <div className="flex flex-col md:flex-row w-full py-6 justify-start px-6 md:px-28 items-start md:items-center gap-4 md:gap-12 border-t border-[#848484] text-[#71717A] text-xs md:text-[14px]">
+        <div className="flex items-center gap-1">
+          <p>Copy right 2024</p>
           <p>©</p>
           <p>Nomnom LLC</p>
         </div>
-
-        <div className="flex gap-6 md:gap-14">
+        <div className="flex flex-wrap gap-4">
           <p>Privacy policy</p>
           <p>Terms and condition</p>
           <p>Cookie policy</p>
         </div>
       </div>
-    </footer>
+    </div>
   );
 };
-
-export default Footer;

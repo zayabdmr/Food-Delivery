@@ -1,17 +1,18 @@
-import express from "express";
+import expresse from "express";
 import {
   createUser,
-  deleteUserById,
+  deleteUser,
   getUserById,
   getUsers,
-  updateUserById,
+  updateUser,
 } from "../controller/user.js";
+import { verifyToken } from "../middleware/auth.js";
 
-export const userRouter = express.Router();
+export const userRouter = expresse.Router();
 
 userRouter
   .post("/", createUser)
   .get("/", getUsers)
   .get("/:id", getUserById)
-  .delete("/:id", deleteUserById)
-  .put("/:id", updateUserById);
+  .delete("/:id", deleteUser)
+  .put("/", verifyToken, updateUser);

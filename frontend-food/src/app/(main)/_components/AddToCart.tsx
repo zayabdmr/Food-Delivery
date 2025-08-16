@@ -60,49 +60,48 @@ const AddToCart = ({ food, onAddToCart }: Props) => {
               />
 
               <div className="flex flex-col justify-between flex-1 px-2 pt-8">
-                <div className="space-y-30 ">
-                  <div>
-                    <h2 className="text-2xl font-bold text-[#EF4444]">
-                      {food.foodName}
-                    </h2>
+                <div>
+                  <h2 className="text-2xl font-bold text-[#EF4444]">
+                    {food.foodName}
+                  </h2>
 
-                    <p className="text-sm text-[#52525B] leading-relaxed">
-                      {food.ingredients}
-                    </p>
-                  </div>
+                  <p className="text-sm text-[#52525B] leading-relaxed">
+                    {food.ingredients}
+                  </p>
+                </div>
 
-                  <div>
-                    <div className="flex justify-between items-center mt-10 ">
-                      <div>
-                        <p className="text-sm text-[#52525B]">Total price</p>
-                        <p className="text-lg font-bold">₮{totalPrice}</p>
-                      </div>
-
-                      <div className="flex items-center gap-4">
-                        <Button
-                          variant="outline"
-                          onClick={handleDecrement}
-                          className="w-10 h-10 rounded-full p-0"
-                        >
-                          <Minus size={16} />
-                        </Button>
-                        <span className="font-semibold">{quantity}</span>
-                        <Button
-                          variant="outline"
-                          onClick={handleIncrement}
-                          className="w-10 h-10 rounded-full p-0"
-                        >
-                          <Plus size={16} />
-                        </Button>
-                      </div>
+                <div>
+                  <div className="flex justify-between items-center mt-10">
+                    <div>
+                      <p className="text-sm text-[#52525B]">Total price</p>
+                      <p className="text-lg font-bold">₮{totalPrice}</p>
                     </div>
-                    <Button
-                      onClick={handleAdd}
-                      className="mt-6 w-full h-11 rounded-full bg-black text-white text-sm font-medium"
-                    >
-                      Add to cart
-                    </Button>
+
+                    <div className="flex items-center gap-4">
+                      <Button
+                        variant="outline"
+                        onClick={handleDecrement}
+                        className="w-10 h-10 rounded-full p-0"
+                      >
+                        <Minus size={16} />
+                      </Button>
+                      <span className="font-semibold">{quantity}</span>
+                      <Button
+                        variant="outline"
+                        onClick={handleIncrement}
+                        className="w-10 h-10 rounded-full p-0"
+                      >
+                        <Plus size={16} />
+                      </Button>
+                    </div>
                   </div>
+
+                  <Button
+                    onClick={handleAdd}
+                    className="mt-6 w-full h-11 rounded-full bg-black text-white text-sm font-medium"
+                  >
+                    Add to cart
+                  </Button>
                 </div>
               </div>
             </div>

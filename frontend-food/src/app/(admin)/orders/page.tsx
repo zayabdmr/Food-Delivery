@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { axiosInstance } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -13,9 +15,7 @@ import {
   HoverCardTrigger,
   HoverCardContent,
 } from "@/components/ui/hover-card";
-import { useEffect, useState } from "react";
-import { axiosInstance } from "@/lib/utils";
-import { Avatar } from "./components/Avatar";
+import { Avatar } from "../orders/component/Avatar";
 import { Input } from "@/components/ui/input";
 
 type Order = {
@@ -57,7 +57,7 @@ export default function Admin() {
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
   return (
-    <div className="bg-[#F4F4F5] min-h-screen w-[1380px]  py-6">
+    <div className="bg-[#F4F4F5] min-h-screen w-[1300px] py-6">
       <div className="max-w-[1200px] mx-auto space-y-6">
         <div className="flex justify-end">
           <Avatar />
@@ -65,7 +65,7 @@ export default function Admin() {
 
         <div className="flex items-center justify-between bg-white rounded-[8px] px-6 py-4">
           <div>
-            <h1 className="text-[#09090B] text-[20px] font-bold ">Orders</h1>
+            <h1 className="text-[#09090B] text-[20px] font-bold">Orders</h1>
             <div className="text-[12px] text-[#71717A] font-medium">
               {data.length} items
             </div>
@@ -74,8 +74,7 @@ export default function Admin() {
             <Input
               type="date"
               className="w-[300px] h-[36px] rounded-full border-[#E4E4E7]"
-            ></Input>
-
+            />
             <button className="bg-[#b6b6ba] w-[179px] h-[36px] hover:bg-[#070707] text-[14px] text-[#FAFAFA] flex justify-center items-center rounded-full font-medium">
               Change delivery state
             </button>
@@ -112,17 +111,12 @@ export default function Admin() {
                         <HoverCardTrigger className="underline cursor-pointer text-blue-600">
                           {order.foodOrderItems.length} foods
                         </HoverCardTrigger>
-                        <HoverCardContent className="bg-white border p-3 rounded-lg shadow-md w-60 space-y-2">
+                        <HoverCardContent className="bg-white border p-3 rounded-lg shadow-md w-65 space-y-2">
                           {order.foodOrderItems.map((item, i) => (
                             <div
                               key={i}
                               className="flex items-center space-x-2"
                             >
-                              <img
-                                src="/placeholder-food.jpg"
-                                alt="food"
-                                className="w-8 h-8 rounded"
-                              />
                               <span className="truncate">{item.food}</span>
                               <span className="text-sm text-gray-500">
                                 x{item.quantity}
@@ -166,6 +160,7 @@ export default function Admin() {
           </Table>
         </div>
 
+        {/* Pagination */}
         <div className="flex justify-end space-x-2">
           {Array.from({ length: totalPages }, (_, i) => (
             <button

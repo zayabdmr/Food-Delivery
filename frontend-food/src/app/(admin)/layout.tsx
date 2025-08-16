@@ -1,4 +1,4 @@
-import { LeftNavigation } from "./all-dishes-page/component/LeftNavigation";
+import { LeftNavigation } from "./alldish/component/LeftNavigation";
 
 export default function AdminLayout({
   children,
@@ -6,8 +6,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex">
-      <div>
+    <div className="flex h-screen">
+      <div className="w-[225px] bg-white">
         <LeftNavigation />
       </div>
 

@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Food } from "./AddToCart";
-import OrderPackage from "./OrderPackage";
 
 interface OrderDetailProps {
   cartItems: Food[];
@@ -42,30 +41,11 @@ export const OrderDetail: React.FC<OrderDetailProps> = ({ cartItems }) => {
           <ShoppingCart /> Order detail
         </SheetTitle>
 
-        <div className="flex w-full justify-between bg-white p-1 rounded-full  mb-6">
-          <Button
-            onClick={() => handleIsSelected(0)}
-            className={`rounded-full w-1/2  ${
-              isSelected === 0
-                ? "bg-[#EF4444] text-white"
-                : "bg-white text-black"
-            }`}
-          >
-            Cart
-          </Button>
-          <Button
-            onClick={() => handleIsSelected(1)}
-            className={`rounded-full w-1/2  ${
-              isSelected === 1
-                ? "bg-[#EF4444] text-white"
-                : "bg-white text-black"
-            }`}
-          >
-            Order
-          </Button>
+        <div className="flex w-full justify-between bg-white p-1 rounded-full mb-6">
+          <Button className={`rounded-full w-full bg-red-500`}>Cart</Button>
         </div>
 
-        {isSelected === 0 ? <MyCart items={cartItems} /> : <OrderPackage />}
+        <MyCart items={cartItems} />
       </SheetContent>
     </Sheet>
   );

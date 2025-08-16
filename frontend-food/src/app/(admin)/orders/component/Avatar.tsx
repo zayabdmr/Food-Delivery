@@ -6,7 +6,7 @@ import {
 
 export const Avatar = () => {
   return (
-    <div className="flex justify-between items-center">
+    <div>
       <UIAvatar>
         <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
         <AvatarFallback>CN</AvatarFallback>

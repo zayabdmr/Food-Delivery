@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/lib/utils";
-import FoodCard, { Food } from "./AddToCart";
+import AddToCart, { Food } from "./AddToCart";
 
 type Category = {
   _id: string;
@@ -107,7 +107,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ onAddToCart }) => {
 
               <div className="flex gap-6 flex-wrap">
                 {category.foods.map((food) => (
-                  <FoodCard
+                  <AddToCart
                     key={food._id}
                     food={food}
                     onAddToCart={onAddToCart}

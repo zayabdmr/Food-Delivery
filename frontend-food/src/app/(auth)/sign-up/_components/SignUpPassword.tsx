@@ -1,173 +1,179 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronLeft } from "lucide-react";
-
-import { axiosInstance } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { axiosInstance } from "@/lib/utils";
 
-const formSchema = z
-  .object({
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters long")
-      .refine((val) => /[a-z]/.test(val), {
-        message: "Must include at least one lowercase letter",
-      })
-      .refine((val) => /[A-Z]/.test(val), {
-        message: "Must include at least one uppercase letter",
-      })
-      .refine((val) => /\d/.test(val), {
-        message: "Must include at least one number",
-      })
-      .refine((val) => /[^A-Za-z0-9]/.test(val), {
-        message: "Must include at least one symbol",
-      }),
-    confirm: z.string(),
-  })
-  .refine((data) => data.password === data.confirm, {
-    message: "Those passwords didn’t match. Try again.",
-    path: ["confirm"],
-  });
+type SignUpPasswordProps = {
+  email: string;
+  handlePreviousStep: () => void;
+  handleAlreadyHaveAccount: () => void;
+};
 
-interface SignUpPasswordProps {
-  setStep: Dispatch<SetStateAction<number>>;
-}
-
-export const SignUpPassword = ({ setStep }: SignUpPasswordProps) => {
+export const SignUpPassword = ({
+  email,
+  handlePreviousStep,
+  handleAlreadyHaveAccount,
+}: SignUpPasswordProps) => {
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const [error, setError] = useState({
+    password: false,
+    confirmPassword: false,
+  });
+  const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    mode: "onChange",
-    defaultValues: {
-      password: "",
-      confirm: "",
-    },
-  });
+  const validatePassword = (password: string) => {
+    if (password.length < 6)
+      return "Password must be at least 6 characters long";
+    if (!/(?=.*[a-zA-Z])/.test(password))
+      return "Weak password. Use numbers and symbols.";
+    return "";
+  };
 
-  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+  const setFieldError = (
+    field: "password" | "confirmPassword",
+    message: string
+  ) => {
+    setError((prev) => ({ ...prev, [field]: true }));
+    setPasswordError(message);
+  };
+
+  const handleSignupError = (err: any) => {
+    console.error("Signup error:", err);
+    const status = err.response?.status;
+    if (status === 409 || status === 405) {
+      setPasswordError(
+        "This email is already registered. Please use a different email."
+      );
+    } else if (status === 400) {
+      setPasswordError(
+        err.response.data.message ||
+          "Invalid input. Please check your information."
+      );
+    } else if (
+      err.code === "ECONNREFUSED" ||
+      err.message?.includes("Network Error")
+    ) {
+      setPasswordError("Unable to connect to server. Please try again later.");
+    } else {
+      setPasswordError("Failed to create account. Please try again.");
+    }
+  };
+
+  const handleSignup = async () => {
+    const password = passwordRef.current?.value || "";
+    const confirmPassword = confirmPasswordRef.current?.value || "";
+
+    setError({ password: false, confirmPassword: false });
+    setPasswordError("");
+
+    if (!password) return setFieldError("password", "Password is required");
+    if (!confirmPassword)
+      return setFieldError("confirmPassword", "Please confirm your password");
+
+    const passwordValidation = validatePassword(password);
+    if (passwordValidation)
+      return setFieldError("password", passwordValidation);
+    if (password !== confirmPassword)
+      return setFieldError("confirmPassword", "Passwords don’t match");
+
+    setIsLoading(true);
     try {
-      const res = await axiosInstance.post("/user/password", data);
-      console.log("Password set successfully:", res.data);
-    } catch (error) {
-      console.error("Setting password failed:", error);
+      const response = await axiosInstance.post(`/user`, { email, password });
+      console.log("Account created successfully:", response.data);
+      router.push("/login?message=Account created successfully");
+    } catch (err: any) {
+      handleSignupError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center mt-24 px-4 w-full">
-      <Card className="w-[350px] shadow-none border-none bg-transparent">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col gap-6"
+    <div className="flex items-center justify-around w-full h-full">
+      <div className="flex flex-col gap-6 w-[370px]">
+        <Button
+          className="bg-white border text-black px-4 py-2 w-[36px] hover:bg-gray-50"
+          onClick={handlePreviousStep}
+          disabled={isLoading}
+        >
+          <ArrowLeft />
+        </Button>
+
+        <div>
+          <p className="text-[24px] font-semibold">Create a strong password</p>
+          <p className="text-[16px] text-[#71717A]">
+            Create a strong password with letters and numbers.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Input
+            ref={passwordRef}
+            placeholder="Password"
+            type={showPassword ? "text" : "password"}
+            className={
+              error.password ? "border-red-500 focus-visible:ring-red-500" : ""
+            }
+            disabled={isLoading}
+            onKeyDown={(e) => e.key === "Enter" && handleSignup()}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Input
+            ref={confirmPasswordRef}
+            placeholder="Confirm Password"
+            type={showPassword ? "text" : "password"}
+            className={
+              error.confirmPassword
+                ? "border-red-500 focus-visible:ring-red-500"
+                : ""
+            }
+            disabled={isLoading}
+            onKeyDown={(e) => e.key === "Enter" && handleSignup()}
+          />
+          {passwordError && (
+            <span className="text-red-500 text-sm">{passwordError}</span>
+          )}
+        </div>
+
+        <label className="flex px-1 gap-2 text-[14px] cursor-pointer">
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={(e) => setShowPassword(e.target.checked)}
+            disabled={isLoading}
+          />
+          Show password
+        </label>
+
+        <Button
+          onClick={handleSignup}
+          className="bg-black text-white"
+          disabled={isLoading}
+        >
+          Let's Go
+        </Button>
+
+        <p className="text-center text-[#71717A]">
+          Already have an account?{" "}
+          <span
+            onClick={handleAlreadyHaveAccount}
+            className="text-[#2563EB] cursor-pointer hover:underline"
           >
-            <CardHeader className="p-0 mb-2">
-              <Button
-                type="button"
-                onClick={() => setStep((prev) => prev - 1)}
-                className="bg-white border text-black w-9 h-9 p-0 mb-2"
-              >
-                <ChevronLeft size={16} />
-              </Button>
-              <CardTitle className="text-[22px] font-semibold">
-                Create a strong password
-              </CardTitle>
-              <CardDescription className="text-[15px] text-muted-foreground">
-                Your password should include uppercase, lowercase, number and
-                symbol.
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="p-0 space-y-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirm"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Confirm password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex items-center space-x-2 mt-1">
-                <input
-                  id="show-password"
-                  type="checkbox"
-                  checked={showPassword}
-                  onChange={() => setShowPassword(!showPassword)}
-                  className="w-4 h-4 border rounded"
-                />
-                <label htmlFor="show-password" className="text-sm">
-                  Show password
-                </label>
-              </div>
-            </CardContent>
-
-            <CardFooter className="p-0">
-              <Button type="submit" className="w-full h-11">
-                Let's Go
-              </Button>
-            </CardFooter>
-
-            <div className="flex justify-center gap-2 text-sm text-muted-foreground pb-6">
-              <p>Already have an account?</p>
-              <button
-                type="button"
-                className="text-[#2563EB] hover:underline"
-                onClick={() => router.push("/log-in")}
-              >
-                Log in
-              </button>
-            </div>
-          </form>
-        </Form>
-      </Card>
+            Log in
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { AddNewCard } from "./AddNewCard";
-import { FoodCard } from "./FoodCard";
+import { AddNewCard } from "../../alldish/component/AddNewCard";
+import { FoodCard } from "../../alldish/component/FoodCard";
 
 type Food = {
   _id: string;

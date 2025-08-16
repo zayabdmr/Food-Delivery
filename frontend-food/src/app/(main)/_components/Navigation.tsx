@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
@@ -23,19 +22,37 @@ export interface Food {
 
 export default function Navigation({ cartItems }: { cartItems: Food[] }) {
   const router = useRouter();
-
   const [userId, setUserId] = useState<string | null>(null);
   const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleToLogin = () => router.push("/log-in");
+  const handleToLogin = () => router.push("/login");
+
   const handleToMainPage = () => router.push("/");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUserId(null);
+    setDeliveryAddress("");
+    setIsLoggedIn(false);
+    router.push("/");
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      const decodedToken: DecodedToken = jwtDecode(token);
-      setUserId(decodedToken._id);
-      setDeliveryAddress(decodedToken.address);
+      try {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        setUserId(decodedToken._id);
+        setDeliveryAddress(decodedToken.address);
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("Invalid token:", error);
+        localStorage.removeItem("token");
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 
@@ -53,13 +70,24 @@ export default function Navigation({ cartItems }: { cartItems: Food[] }) {
           deliveryAddress={deliveryAddress}
           setDeliveryAddress={setDeliveryAddress}
         />
+
         <OrderDetail cartItems={cartItems} />
+
         <Button
           onClick={handleToLogin}
           className="w-[38px] h-[38px] bg-[#EF4444] rounded-full flex items-center justify-center"
         >
           <User className="text-white" />
         </Button>
+
+        {isLoggedIn && (
+          <Button
+            onClick={handleLogout}
+            className="w-[100px] h-[38px] bg-[#EF4444] rounded-full flex items-center justify-center"
+          >
+            Log out
+          </Button>
+        )}
       </div>
     </div>
   );
