@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { axiosInstance } from "@/lib/utils";
+import { AxiosError } from "axios";
 
 export const LoginPasswordEmail = () => {
   const router = useRouter();
@@ -56,24 +57,28 @@ export const LoginPasswordEmail = () => {
       } else {
         setErrors({ email: "", password: "Login failed. Please try again." });
       }
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        setErrors({
-          email: "",
-          password: "Incorrect password. Please try again.",
-        });
-      } else if (err.response?.status === 404) {
-        setErrors({ email: "Account not found.", password: "" });
-      } else if (
-        err.code === "ECONNREFUSED" ||
-        err.message.includes("Network Error")
-      ) {
-        setErrors({
-          email: "",
-          password: "Unable to connect to server. Try again later.",
-        });
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          setErrors({
+            email: "",
+            password: "Incorrect password. Please try again.",
+          });
+        } else if (err.response?.status === 404) {
+          setErrors({ email: "Account not found.", password: "" });
+        } else if (
+          err.code === "ECONNREFUSED" ||
+          err.message.includes("Network Error")
+        ) {
+          setErrors({
+            email: "",
+            password: "Unable to connect to server. Try again later.",
+          });
+        } else {
+          setErrors({ email: "", password: "Login failed. Please try again." });
+        }
       } else {
-        setErrors({ email: "", password: "Login failed. Please try again." });
+        setErrors({ email: "", password: "An unexpected error occurred." });
       }
     } finally {
       setIsLoading(false);
@@ -152,7 +157,7 @@ export const LoginPasswordEmail = () => {
         </Button>
 
         <p className="text-center text-[#71717A]">
-          Don’t have an account?{" "}
+          Do not have an account?{" "}
           <span
             onClick={handleSignUpRedirect}
             className="text-[#2563EB] cursor-pointer hover:underline"
@@ -164,3 +169,7 @@ export const LoginPasswordEmail = () => {
     </div>
   );
 };
+
+function isAxiosError(error: unknown): error is AxiosError {
+  return (error as AxiosError).isAxiosError === true;
+}

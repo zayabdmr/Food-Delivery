@@ -31,7 +31,6 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(user.toJSON(), secret_key, { expiresIn: 3600 });
-    // const token = jwt.sign({...user}, secret_key, { expiresIn: 3600 }); second method
 
     return res.status(200).send({
       success: true,
@@ -57,8 +56,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
 
   auth: {
-    user: "zayabudmir@gmail.com",
-    pass: "xvdeelthgtfvhzcp",
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
   },
 });
 

@@ -7,7 +7,6 @@ import {
   getOrderByUser,
   updateFoodOrderById,
 } from "../controller/food-order.js";
-import { verifyToken } from "../middleware/auth.js";
 
 export const foodOrderRouter = express.Router();
 

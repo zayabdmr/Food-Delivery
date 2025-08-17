@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { Food } from "./(main)/_components/AddToCart";
 import Navigation from "./(main)/_components/Navigation";
 import { ProductCard } from "./(main)/_components/ProductCard";
+import { Footer } from "./(main)/_components/Footer";
 
 export default function Home() {
   const [cartItems, setCartItems] = useState<Food[]>([]);
@@ -41,6 +42,7 @@ export default function Home() {
 
         <ProductCard onAddToCart={handleAddToCart} />
       </div>
+      <Footer />
     </Suspense>
   );
 }

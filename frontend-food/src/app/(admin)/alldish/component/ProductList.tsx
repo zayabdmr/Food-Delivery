@@ -1,11 +1,11 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { axiosInstance } from "@/lib/utils";
+
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 import { AddNewCard } from "../../alldish/component/AddNewCard";
 import { FoodCard } from "../../alldish/component/FoodCard";
 
@@ -41,7 +42,6 @@ export const ProductList = () => {
 
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const categoryId = searchParams.get("categoryId");
 
   const fetchFoods = async () => {
@@ -76,10 +76,8 @@ export const ProductList = () => {
       });
 
       const newCategory = response.data.category;
-
       setNewCategoryName("");
       setDialogOpen(false);
-
       await fetchFoods();
 
       if (newCategory?._id) {
@@ -102,43 +100,49 @@ export const ProductList = () => {
     <div className="bg-white min-h-screen rounded-[12px]">
       <section className="w-full px-10 py-8">
         <h2 className="text-[22px] font-semibold mb-4">Dishes category</h2>
+
         <div className="flex gap-2 flex-wrap">
           <CategoryTab
-            active={!categoryId}
             label={`All Dishes (${getTotalCount()})`}
+            active={!categoryId}
             onClick={() => handleCategoryClick(null)}
           />
+
           {categories.map((cat) => (
             <CategoryTab
               key={cat._id}
-              active={categoryId === cat._id}
               label={`${cat.categoryName} (${cat.foods.length})`}
+              active={categoryId === cat._id}
               onClick={() => handleCategoryClick(cat._id)}
             />
           ))}
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="w-[40px] h-[40px] bg-[#EF4444] flex justify-center items-center rounded-full !static">
+              <Button className="w-[40px] h-[40px] bg-[#EF4444] rounded-full flex items-center justify-center">
                 <Plus size={16} color="white" />
               </Button>
             </DialogTrigger>
+
             <DialogContent className="sm:max-w-[460px]">
               <DialogHeader>
-                <DialogTitle className="text-[#09090B] text-[18px] font-semibold">
+                <DialogTitle className="text-[18px] font-semibold text-[#09090B]">
                   Add new category
                 </DialogTitle>
               </DialogHeader>
 
               <div className="flex flex-col gap-2 mt-4 text-[14px]">
-                <Label htmlFor="name" className="text-[#09090B] font-medium">
+                <Label
+                  htmlFor="categoryName"
+                  className="text-[#09090B] font-medium"
+                >
                   Category name
                 </Label>
                 <Input
-                  id="name"
+                  id="categoryName"
+                  placeholder="Type category name..."
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder="Type category name..."
                   className="h-[42px] text-[#71717A]"
                 />
               </div>
@@ -146,7 +150,7 @@ export const ProductList = () => {
               <DialogFooter className="pt-4">
                 <Button
                   onClick={handleAddCategory}
-                  className="w-[123px] h-[40px] text-[14px] text-[#FAFAFA] font-semibold"
+                  className="w-[123px] h-[40px] text-[14px] text-white font-semibold"
                 >
                   Add category
                 </Button>
@@ -165,8 +169,10 @@ export const ProductList = () => {
               <h3 className="text-[22px] font-semibold mb-4">
                 {category.categoryName} ({category.foods.length})
               </h3>
+
               <div className="flex flex-wrap gap-4">
                 <AddNewCard category={category} refetchDishes={fetchFoods} />
+
                 {category.foods.map((food) => (
                   <FoodCard
                     key={food._id}
@@ -191,13 +197,15 @@ const CategoryTab = ({
   label: string;
   active: boolean;
   onClick: () => void;
-}) => (
-  <span
-    onClick={onClick}
-    className={`px-4 py-2 text-[14px] rounded-full cursor-pointer transition ${
-      active ? "bg-[#EF4444] text-white" : "bg-[#F4F4F5] text-black"
-    }`}
-  >
-    {label}
-  </span>
-);
+}) => {
+  return (
+    <span
+      onClick={onClick}
+      className={`px-4 py-2 text-[14px] rounded-full cursor-pointer transition ${
+        active ? "bg-[#EF4444] text-white" : "bg-[#F4F4F5] text-black"
+      }`}
+    >
+      {label}
+    </span>
+  );
+};

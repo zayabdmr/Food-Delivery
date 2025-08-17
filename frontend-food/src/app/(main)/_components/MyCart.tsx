@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { axiosInstance } from "@/lib/utils";
+import { AxiosError } from "axios";
 
 interface DecodedToken {
   userId?: string;
@@ -49,9 +50,11 @@ export default function MyCart({ items }: { items: Food[] }) {
   }, [cartItems]);
 
   useEffect(() => {
-    cartItems.length
-      ? localStorage.setItem("foods", JSON.stringify(cartItems))
-      : localStorage.removeItem("foods");
+    if (cartItems.length) {
+      localStorage.setItem("foods", JSON.stringify(cartItems));
+    } else {
+      localStorage.removeItem("foods");
+    }
   }, [cartItems]);
 
   const updateQuantity = (name: string, d: number) =>
@@ -67,7 +70,10 @@ export default function MyCart({ items }: { items: Food[] }) {
     setCartItems((p) => p.filter((i) => i.foodName !== name));
 
   const handleCheckout = async () => {
-    if (!userId) return setShowLoginAlert(true);
+    if (!userId) {
+      setShowLoginAlert(true); // ✅ no-unused-expressions алдааг зассан
+      return;
+    }
     if (!cartItems.length) return alert("Your cart is empty");
     if (totalPrice <= 0) return alert("Invalid total price");
     if (!deliveryAddress.trim()) return alert("Please enter delivery address");
@@ -95,9 +101,20 @@ export default function MyCart({ items }: { items: Food[] }) {
       setCartItems([]);
       setDeliveryAddress("");
       setShowSuccessAlert(true);
-    } catch (err: any) {
-      const status = err.response?.status as number | undefined;
-      const msg: string | undefined = err.response?.data?.message;
+    } catch (err: unknown) {
+      const error = err as AxiosError;
+
+      const status = error.response?.status;
+      const data = error.response?.data;
+
+      const msg =
+        data &&
+        typeof data === "object" &&
+        "message" in data &&
+        typeof (data as Record<string, unknown>).message === "string"
+          ? (data as { message: string }).message
+          : undefined;
+
       if (status === 401 || status === 403) {
         localStorage.removeItem("token");
         setUserId(null);

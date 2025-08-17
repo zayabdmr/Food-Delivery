@@ -1,5 +1,4 @@
-import expresse, { Router } from "express";
-import {} from "../controller/user.js";
+import express, { Router } from "express";
 import { login, sendMail } from "../controller/auth.js";
 
 export const authRouter = Router();

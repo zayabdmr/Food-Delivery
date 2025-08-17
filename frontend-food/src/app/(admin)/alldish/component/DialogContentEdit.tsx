@@ -1,13 +1,12 @@
 "use client";
 
+import { useState, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Image as ImageIcon, X } from "lucide-react";
-import { useState, ChangeEvent } from "react";
+import { Image as ImageIcon, X, Trash } from "lucide-react";
 import { uploadImage } from "../../../../../utils/image-upload";
 import { axiosInstance } from "@/lib/utils";
-import { Trash } from "lucide-react";
 
 export type Food = {
   _id: string;
@@ -35,6 +34,11 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
     }
+  };
+
+  const clearImage = () => {
+    setImageFile(null);
+    setImagePreview("");
   };
 
   const handleUpdateFood = async () => {
@@ -72,45 +76,58 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex gap-4">
-        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+    <div className="space-y-4">
+      <div className="flex items-start gap-4">
+        <Label
+          htmlFor="foodName"
+          className="w-[140px] text-[12px] text-[#71717A]"
+        >
           Dish name
         </Label>
         <Input
-          className="text-[14px] text-[#09090B]"
+          id="foodName"
           value={foodName}
           onChange={(e) => setFoodName(e.target.value)}
+          className="text-[14px] text-[#09090B]"
         />
       </div>
 
-      <div className="flex gap-4">
-        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+      <div className="flex items-start gap-4">
+        <Label
+          htmlFor="dishCategory"
+          className="w-[140px] text-[12px] text-[#71717A]"
+        >
           Dish category
         </Label>
         <Input
-          className="text-[14px] text-[#09090B]"
+          id="dishCategory"
           value={foodName}
-          onChange={(e) => setFoodName(e.target.value)}
+          readOnly
+          className="text-[14px] text-[#09090B] bg-gray-100 cursor-not-allowed"
         />
       </div>
 
-      <div className="flex gap-4">
-        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+      <div className="flex items-start gap-4">
+        <Label
+          htmlFor="ingredients"
+          className="w-[140px] text-[12px] text-[#71717A]"
+        >
           Ingredients
         </Label>
         <textarea
+          id="ingredients"
           value={ingredients}
           onChange={(e) => setIngredients(e.target.value)}
           className="w-full h-[112px] rounded-md border border-gray-300 p-2 resize-none text-[#09090B] text-[14px]"
         />
       </div>
 
-      <div className="flex gap-4">
-        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+      <div className="flex items-start gap-4">
+        <Label htmlFor="price" className="w-[140px] text-[12px] text-[#71717A]">
           Price
         </Label>
         <Input
+          id="price"
           type="number"
           value={price}
           onChange={(e) => setPrice(Number(e.target.value))}
@@ -118,8 +135,8 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
         />
       </div>
 
-      <div className="flex gap-4">
-        <Label className="text-[12px] flex items-start text-[#71717A] w-[140px]">
+      <div className="flex items-start gap-4">
+        <Label htmlFor="image" className="w-[140px] text-[12px] text-[#71717A]">
           Image
         </Label>
         {imagePreview ? (
@@ -130,11 +147,10 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
               className="object-cover w-full h-full"
             />
             <button
-              onClick={() => {
-                setImageFile(null);
-                setImagePreview("");
-              }}
-              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white text-black flex items-center justify-center"
+              type="button"
+              onClick={clearImage}
+              className="absolute top-2 right-2 flex items-center justify-center w-6 h-6 rounded-full bg-white text-black hover:bg-gray-200 transition"
+              aria-label="Remove image"
             >
               <X size={14} />
             </button>
@@ -164,10 +180,12 @@ export const DialogContentEdit = ({ food, onSave }: DialogContentEditProps) => {
 
       <div className="pt-4 flex justify-between">
         <Button
-          className="bg-[#FFF] border border-red-500"
+          variant="outline"
+          className="border-red-500 text-red-600 hover:bg-red-50"
           onClick={handleDeleteFood}
+          aria-label="Delete dish"
         >
-          <Trash color="red" size={16} />
+          <Trash size={16} />
         </Button>
 
         <Button

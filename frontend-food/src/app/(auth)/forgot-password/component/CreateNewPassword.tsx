@@ -69,7 +69,7 @@ export const CreateNewPassword = ({
         </div>
 
         <Button onClick={() => router.push("/login")} className="bg-black">
-          Let's Go
+          Go
         </Button>
       </div>
     </div>

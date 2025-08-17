@@ -70,7 +70,7 @@ export const SignUpEmail = ({
         </div>
 
         <Button onClick={handleNext} className="bg-black text-white">
-          Let's Go
+          Go
         </Button>
 
         <p className="text-center text-[#71717A]">

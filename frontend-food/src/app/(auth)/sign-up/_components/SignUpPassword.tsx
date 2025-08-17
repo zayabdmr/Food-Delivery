@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { axiosInstance } from "@/lib/utils";
+import { AxiosError } from "axios";
 
 type SignUpPasswordProps = {
   email: string;
@@ -46,25 +47,35 @@ export const SignUpPassword = ({
     setPasswordError(message);
   };
 
-  const handleSignupError = (err: any) => {
+  function isAxiosError(error: unknown): error is AxiosError {
+    return (error as AxiosError).isAxiosError === true;
+  }
+
+  const handleSignupError = (err: unknown) => {
     console.error("Signup error:", err);
-    const status = err.response?.status;
-    if (status === 409 || status === 405) {
-      setPasswordError(
-        "This email is already registered. Please use a different email."
-      );
-    } else if (status === 400) {
-      setPasswordError(
-        err.response.data.message ||
-          "Invalid input. Please check your information."
-      );
-    } else if (
-      err.code === "ECONNREFUSED" ||
-      err.message?.includes("Network Error")
-    ) {
-      setPasswordError("Unable to connect to server. Please try again later.");
+    if (isAxiosError(err)) {
+      const status = err.response?.status;
+      if (status === 409 || status === 405) {
+        setPasswordError(
+          "This email is already registered. Please use a different email."
+        );
+      } else if (status === 400) {
+        setPasswordError(
+          (err.response?.data as { message?: string })?.message ||
+            "Invalid input. Please check your information."
+        );
+      } else if (
+        err.code === "ECONNREFUSED" ||
+        err.message.includes("Network Error")
+      ) {
+        setPasswordError(
+          "Unable to connect to server. Please try again later."
+        );
+      } else {
+        setPasswordError("Failed to create account. Please try again.");
+      }
     } else {
-      setPasswordError("Failed to create account. Please try again.");
+      setPasswordError("An unexpected error occurred.");
     }
   };
 
@@ -83,14 +94,14 @@ export const SignUpPassword = ({
     if (passwordValidation)
       return setFieldError("password", passwordValidation);
     if (password !== confirmPassword)
-      return setFieldError("confirmPassword", "Passwords don’t match");
+      return setFieldError("confirmPassword", "Passwords do not match");
 
     setIsLoading(true);
     try {
       const response = await axiosInstance.post(`/user`, { email, password });
       console.log("Account created successfully:", response.data);
       router.push("/login?message=Account created successfully");
-    } catch (err: any) {
+    } catch (err: unknown) {
       handleSignupError(err);
     } finally {
       setIsLoading(false);
@@ -161,7 +172,7 @@ export const SignUpPassword = ({
           className="bg-black text-white"
           disabled={isLoading}
         >
-          Let's Go
+          Go
         </Button>
 
         <p className="text-center text-[#71717A]">

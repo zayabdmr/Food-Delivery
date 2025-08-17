@@ -1,15 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
-// Food Order Item schema
 const foodOrderItemSchema = new mongoose.Schema(
   {
     food: { type: Schema.Types.ObjectId, ref: "Food", required: true },
     quantity: { type: Number, required: true },
   },
-  { _id: false } // тусдаа _id үүсгэхгүй
+  { _id: false }
 );
 
-// Food Order schema
 const foodOrderSchema = new mongoose.Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },

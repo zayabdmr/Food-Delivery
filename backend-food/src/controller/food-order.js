@@ -1,6 +1,5 @@
 import FoodOrderModel from "../model/food-order-model.js";
 
-// Create a new food order
 export const createFoodOrder = async (req, res) => {
   console.log("Create food order request:", req.body);
   console.log("User from token:", req.user);
@@ -48,7 +47,6 @@ export const createFoodOrder = async (req, res) => {
   }
 };
 
-// Get all food orders
 export const getFoodOrders = async (req, res) => {
   try {
     const foodOrders = await FoodOrderModel.find()
@@ -69,7 +67,6 @@ export const getFoodOrders = async (req, res) => {
   }
 };
 
-// Get food order by ID
 export const getFoodOrderById = async (req, res) => {
   const { id } = req.params;
 
@@ -107,7 +104,6 @@ export const getFoodOrderById = async (req, res) => {
   }
 };
 
-// Get orders by user ID
 export const getOrderByUser = async (req, res) => {
   const { userId } = req.params;
   const finalUserId = userId || req.user?._id || req.user?.userId;
@@ -138,7 +134,6 @@ export const getOrderByUser = async (req, res) => {
   }
 };
 
-// Delete food order by ID
 export const deleteFoodOrderById = async (req, res) => {
   const { id } = req.params;
 
@@ -173,7 +168,6 @@ export const deleteFoodOrderById = async (req, res) => {
   }
 };
 
-// Update food order by ID
 export const updateFoodOrderById = async (req, res) => {
   const { id } = req.params;
   const { userId, foodOrderItems, totalPrice, status, deliveryMockAddress } =

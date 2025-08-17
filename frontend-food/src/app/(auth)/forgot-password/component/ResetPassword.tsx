@@ -87,7 +87,7 @@ export const ResetPassword = ({
         </Button>
 
         <p className="text-center text-[#71717A]">
-          Don't have an account?{" "}
+          Do not have an account?{" "}
           <span
             onClick={() => router.push("/sign-up")}
             className="text-[#2563EB] cursor-pointer"

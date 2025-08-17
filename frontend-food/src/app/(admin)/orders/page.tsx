@@ -34,27 +34,27 @@ type Order = {
 };
 
 export default function Admin() {
-  const [data, setData] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-
-  const getOrders = async () => {
-    try {
-      const response = await axiosInstance.get("/foodOrder");
-      setData(response.data.data);
-    } catch (error) {
-      console.error("Захиалгуудыг авах үед алдаа гарлаа:", error);
-    }
-  };
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    getOrders();
+    const fetchOrders = async () => {
+      try {
+        const response = await axiosInstance.get("/foodOrder");
+        setOrders(response.data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchOrders();
   }, []);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentOrders = orders.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(orders.length / itemsPerPage);
 
   return (
     <div className="bg-[#F4F4F5] min-h-screen w-[1300px] py-6">
@@ -66,9 +66,9 @@ export default function Admin() {
         <div className="flex items-center justify-between bg-white rounded-[8px] px-6 py-4">
           <div>
             <h1 className="text-[#09090B] text-[20px] font-bold">Orders</h1>
-            <div className="text-[12px] text-[#71717A] font-medium">
-              {data.length} items
-            </div>
+            <p className="text-[12px] text-[#71717A] font-medium">
+              {orders.length} items
+            </p>
           </div>
           <div className="flex items-center space-x-4">
             <Input
@@ -94,18 +94,20 @@ export default function Admin() {
                 <TableHead>Date</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Delivery Address</TableHead>
-                <TableHead>Delivery state</TableHead>
+                <TableHead>Delivery State</TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {currentItems.length > 0 ? (
-                currentItems.map((order, index) => (
+              {currentOrders.length > 0 ? (
+                currentOrders.map((order, index) => (
                   <TableRow key={order._id} className="text-sm">
                     <TableCell>
                       <input type="checkbox" />
                     </TableCell>
-                    <TableCell>{indexOfFirstItem + index + 1}</TableCell>
+                    <TableCell>{indexOfFirst + index + 1}</TableCell>
                     <TableCell>{order.user?.email || "Unknown"}</TableCell>
+
                     <TableCell>
                       <HoverCard>
                         <HoverCardTrigger className="underline cursor-pointer text-blue-600">
@@ -126,21 +128,15 @@ export default function Admin() {
                         </HoverCardContent>
                       </HoverCard>
                     </TableCell>
+
                     <TableCell>
                       {new Date(order.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>₮{order.totalPrice}</TableCell>
                     <TableCell>{order.user?.address || "Unknown"}</TableCell>
+
                     <TableCell>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          order.status === "Pending"
-                            ? "text-[#E05151] bg-[#FDEDED]"
-                            : order.status === "Delivered"
-                              ? "text-[#2A9D8F] bg-[#E6F4F1]"
-                              : "text-[#6B7280] bg-[#F3F4F6]"
-                        }`}
-                      >
+                      <span className="px-3 py-1 rounded-full text-[12px] font-medium">
                         {order.status}
                       </span>
                     </TableCell>
@@ -160,7 +156,6 @@ export default function Admin() {
           </Table>
         </div>
 
-        {/* Pagination */}
         <div className="flex justify-end space-x-2">
           {Array.from({ length: totalPages }, (_, i) => (
             <button

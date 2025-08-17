@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 export const createUser = async (req, res) => {
   const { email, password, phoneNumber, address, isVerified } = req.body;
 
-  // Validation
   if (!email || !password) {
     return res.status(400).send({
       success: false,
@@ -13,7 +12,6 @@ export const createUser = async (req, res) => {
   }
 
   try {
-    // Check if user already exists
     const existingUser = await UserModel.findOne({ email: email });
     if (existingUser) {
       return res.status(409).send({
@@ -22,10 +20,8 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await UserModel.create({
       email: email,
       password: hashedPassword,
@@ -34,7 +30,6 @@ export const createUser = async (req, res) => {
       isVerified: isVerified || false,
     });
 
-    // Return user without password
     const userResponse = user.toObject();
     delete userResponse.password;
 
@@ -71,7 +66,6 @@ export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate ID format (for MongoDB ObjectId)
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
         success: false,
@@ -79,7 +73,7 @@ export const getUserById = async (req, res) => {
       });
     }
 
-    const user = await UserModel.findById(id).select("-password"); // Exclude password
+    const user = await UserModel.findById(id).select("-password");
 
     if (!user) {
       return res.status(404).send({
@@ -105,7 +99,6 @@ export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate ID format
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
         success: false,
@@ -141,12 +134,10 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
-    // Remove sensitive fields that shouldn't be updated directly
-    delete updateData.password; // Use separate endpoint for password updates
+    delete updateData.password;
     delete updateData._id;
     delete updateData.__v;
 
-    // Validate ID format
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).send({
         success: false,
@@ -154,7 +145,6 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Check if user exists
     const existingUser = await UserModel.findById(id);
     if (!existingUser) {
       return res.status(404).send({
@@ -163,7 +153,6 @@ export const updateUser = async (req, res) => {
       });
     }
 
-    // Update user and return updated document
     const updatedUser = await UserModel.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
